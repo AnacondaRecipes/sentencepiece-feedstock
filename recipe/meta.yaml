@@ -17,7 +17,7 @@ requirements:
     - python
     - cmake
     - {{ compiler('cxx') }}
-    - gperftools  # [unix]
+#    - gperftools  # [unix]
     - make
     - pkg-config
   run:
