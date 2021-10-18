@@ -10,6 +10,12 @@ source:
 
 build:
   number: 0
+  missing_dso_whitelist:              # [linux]
+    - "$RPATH/libpthread.so.*"        # [linux]
+    - "$RPATH/libm.so.*"              # [linux]
+    - "$RPATH/libc.so.*"              # [linux]
+    - "/lib64/ld-linux-x86-64.so.*"   # [linux and x86_64]
+    - "/lib64/ld-linux-aarch64.so.*"  # [linux and aarch64]
 
 requirements:
   host:
