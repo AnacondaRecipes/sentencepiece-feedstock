@@ -21,6 +21,8 @@ build:
 requirements:
   host:
     - pip
+    - setuptools
+    - wheel
     - python
     - cmake
     - {{ compiler('cxx') }}
