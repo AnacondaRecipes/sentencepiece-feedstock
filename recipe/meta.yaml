@@ -52,6 +52,10 @@ about:
   license_family: Apache
   license_file: LICENSE
   summary: "SentencePiece is an unsupervised text tokenizer and detokenizer mainly for Neural Network-based text generation systems where the vocabulary size is predetermined prior to the neural model training."
+  description: |
+SentencePiece implements subword units (e.g., byte-pair-encoding (BPE) [Sennrich et al.]) and unigram language model [Kudo.]) with the extension of direct training from raw sentences. SentencePiece allows us to make a purely end-to-end system that does not depend on language-specific pre/postprocessing.
+  doc_url: https://github.com/google/sentencepiece/blob/master/doc/api.md
+  dev_url: https://github.com/google/sentencepiece/
 
 extra:
   recipe-maintainers:
