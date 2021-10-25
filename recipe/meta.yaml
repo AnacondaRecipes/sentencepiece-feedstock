@@ -28,8 +28,8 @@ requirements:
     - cmake
     - {{ compiler('cxx') }}
 #    - gperftools  # [unix]
-    - make
-    - pkg-config
+    - make        # [not win]
+    - pkg-config  # [not win]
   run:
     - python
 
