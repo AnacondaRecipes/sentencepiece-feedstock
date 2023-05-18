@@ -13,11 +13,12 @@ if [[ "${target_platform}" == linux-* ]]; then
         -DCMAKE_INSTALL_LIBDIR=$PREFIX/lib \
         -DCMAKE_AR="${AR}" \
         -DSPM_ENABLE_TCMALLOC=OFF \
+        -DSPM_ENABLE_SHARED=ON \
         -S ..
 
 elif [[ "${target_platform}" == osx-* ]]; then
 
-    cmake .. -DSPM_ENABLE_SHARED=OFF -DCMAKE_INSTALL_PREFIX=../..
+    cmake .. -DSPM_ENABLE_SHARED=ON -DCMAKE_INSTALL_PREFIX=../..
     
 fi
 
@@ -30,4 +31,4 @@ fi
 
 cd $SRC_DIR/python
 ${PYTHON} setup.py build
-${PYTHON} setup.py install
+${PYTHON} -m pip install . --no-deps --no-build-isolation
