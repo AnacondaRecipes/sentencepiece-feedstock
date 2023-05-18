@@ -20,16 +20,16 @@ build:
     - "/lib64/ld64.so.*"              # [linux and (ppc64le or s390x)]
 
 requirements:
+  build:
+    - cmake
+    - {{ compiler('cxx') }}
+    - make        # [not win]
+    - pkg-config  # [not win]
   host:
     - pip
     - setuptools
     - wheel
     - python
-    - cmake
-    - {{ compiler('cxx') }}
-#    - gperftools  # [unix]
-    - make        # [not win]
-    - pkg-config  # [not win]
   run:
     - python
 
