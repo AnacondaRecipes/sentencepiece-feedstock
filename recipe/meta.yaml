@@ -1,4 +1,4 @@
-{% set version = "0.1.95" %}
+{% set version = "0.1.99" %}
 
 package:
   name: sentencepiece
@@ -6,7 +6,7 @@ package:
 
 source:
   url: https://github.com/google/sentencepiece/archive/v{{ version }}.tar.gz
-  sha256: 1c0bd83e03f71a10fc934b7ce996e327488b838587f03159fd392c77c7701389
+  sha256: 63617eaf56c7a3857597dcd8780461f57dd21381b56a27716ef7d7e02e14ced4
 
 build:
   number: 0
