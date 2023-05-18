@@ -1,0 +1,22 @@
+diff --git a/src/normalizer.cc b/src/normalizer.cc
+index 2ab8084..2f680fa 100644
+--- a/src/normalizer.cc
++++ b/src/normalizer.cc
+@@ -265,7 +265,7 @@ std::string Normalizer::EncodePrecompiledCharsMap(
+ #ifdef IS_BIG_ENDIAN
+   uint32 *data = reinterpret_cast<uint32 *>(const_cast<char *>(blob.data()));
+   for (int i = 0; i <= trie_blob.size() / 4; ++i)
+-    data[i] = util::Swap32(data[i]);
++    data[i] = Swap32(data[i]);
+ #endif
+ 
+   return blob;
+@@ -285,7 +285,7 @@ util::Status Normalizer::DecodePrecompiledCharsMap(
+   }
+ 
+ #ifdef IS_BIG_ENDIAN
+-  trie_blob_size = util::Swap32(trie_blob_size);
++  trie_blob_size = Swap32(trie_blob_size);
+ #endif
+ 
+   if (trie_blob_size >= blob.size())
