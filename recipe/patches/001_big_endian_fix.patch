@@ -1,5 +1,5 @@
 diff --git a/src/normalizer.cc b/src/normalizer.cc
-index 2ab8084..2f680fa 100644
+index 2ab8084..f42cde6 100644
 --- a/src/normalizer.cc
 +++ b/src/normalizer.cc
 @@ -265,7 +265,7 @@ std::string Normalizer::EncodePrecompiledCharsMap(
@@ -20,3 +20,12 @@ index 2ab8084..2f680fa 100644
  #endif
  
    if (trie_blob_size >= blob.size())
+@@ -296,7 +296,7 @@ util::Status Normalizer::DecodePrecompiledCharsMap(
+ #ifdef IS_BIG_ENDIAN
+   buffer->assign(blob.data(), trie_blob_size);
+   uint32 *data = reinterpret_cast<uint32 *>(const_cast<char *>(buffer->data()));
+-  for (int i = 0; i < trie_blob_size / 4; ++i) data[i] = util::Swap32(data[i]);
++  for (int i = 0; i < trie_blob_size / 4; ++i) data[i] = Swap32(data[i]);
+   *trie_blob = absl::string_view(buffer->data(), trie_blob_size);
+ #else
+   *trie_blob = absl::string_view(blob.data(), trie_blob_size);
