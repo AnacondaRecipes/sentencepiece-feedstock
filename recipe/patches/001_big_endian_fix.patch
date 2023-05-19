@@ -1,0 +1,196 @@
+From 827591a0c552f2187aac8b8e0f999e8ff31aad81 Mon Sep 17 00:00:00 2001
+From: Taku Kudo <taku@google.com>
+Date: Sun, 14 May 2023 09:08:39 +0000
+Subject: [PATCH] Fixes build test errors in big-endian machines
+
+---
+ .github/workflows/cross_build.yml | 35 +++++++++++++++++++++++++++++++
+ CMakeLists.txt                    |  5 +++++
+ src/CMakeLists.txt                |  2 ++
+ src/common.h                      | 10 +++++----
+ src/normalizer.cc                 | 15 ++++++-------
+ src/unigram_model_trainer_test.cc |  5 ++---
+ 6 files changed, 58 insertions(+), 14 deletions(-)
+ create mode 100644 .github/workflows/cross_build.yml
+
+diff --git a/.github/workflows/cross_build.yml b/.github/workflows/cross_build.yml
+new file mode 100644
+index 00000000..2c1b6ab1
+--- /dev/null
++++ b/.github/workflows/cross_build.yml
+@@ -0,0 +1,35 @@
++name: Multiple architectures build test
++
++on:
++  push:
++    branches: [ master ]
++    tags:
++      - 'v*'
++  pull_request:
++    branches: [ master ]
++
++jobs:
++  build:
++    strategy:
++      matrix:
++        os: [ ubuntu-latest ]
++    runs-on: ${{ matrix.os }}
++
++    steps:
++    - uses: actions/checkout@v3
++
++    - name: Install cross tools
++      run: sudo apt-get install -y sudo qemu-user gdb zstd dwarfdump {gcc,g++}-10-{i686,aarch64,riscv64,powerpc,powerpc64,powerpc64le,s390x,sparc64,m68k,sh4,alpha}-linux-gnu {gcc,g++}-10-arm-linux-gnueabihf
++
++    - name: Build
++      run: |
++        for i in i686 aarch64 riscv64 powerpc powerpc64 powerpc64le s390x sparc64 m68k alpha; do
++          rm -fr build_${i}
++          mkdir -p build_${i}
++          cd build_${i}
++          env CXX=/usr/bin/${i}-linux-gnu-g++-10 CC=/usr/bin/${i}-linux-gnu-gcc-10 cmake .. -DSPM_ENABLE_SHARED=OFF -DSPM_BUILD_TEST=ON -DCMAKE_FIND_ROOT_PATH=/usr/${i}-linux-gnu -DSPM_CROSS_SYSTEM_PROCESSOR=${i}
++          make -j$(nproc)
++          arc=`echo $i | sed -e s/powerpc/ppc/ -e s/686/386/`
++          qemu-${arc} -L /usr/${i}-linux-gnu src/spm_test
++          cd ..
++        done
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 1b3af049..a2f0f77b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -33,6 +33,11 @@ option(SPM_NO_THREADLOCAL "Disable thread_local operator" OFF)
+ option(SPM_USE_BUILTIN_PROTOBUF "Use built-in protobuf" ON)
+ option(SPM_USE_EXTERNAL_ABSL "Use external abseil" OFF)
+ option(SPM_ENABLE_MSVC_MT_BUILD, "Use /MT flag in MSVC build" OFF)
++option(SPM_CROSS_SYSTEM_PROCESSOR, "Override system processor" "")
++
++if (SPM_CROSS_SYSTEM_PROCESSOR)
++ set(CMAKE_SYSTEM_PROCESSOR ${SPM_CROSS_SYSTEM_PROCESSOR})
++endif()
+ 
+ # Disable shared build on windows
+ if(WIN32)
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 1c7726e3..8c684532 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -208,6 +208,7 @@ if ((${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm") OR
+     (${CMAKE_SYSTEM_PROCESSOR} MATCHES "mips") OR
+     (${CMAKE_SYSTEM_PROCESSOR} MATCHES "m68k") OR
+     (${CMAKE_SYSTEM_PROCESSOR} MATCHES "ppc") OR
++    (${CMAKE_SYSTEM_PROCESSOR} MATCHES "powerpc") OR
+     (${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch") OR
+     (${CMAKE_SYSTEM_PROCESSOR} MATCHES "sh4"))
+   find_library(ATOMIC_LIB NAMES atomic libatomic.so libatomic.so.1)
+@@ -217,6 +218,7 @@ if ((${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm") OR
+   endif()
+ endif()
+ 
++
+ if (SPM_ENABLE_SHARED)
+   add_library(sentencepiece SHARED ${SPM_SRCS})
+   add_library(sentencepiece_train SHARED ${SPM_TRAIN_SRCS})
+diff --git a/src/common.h b/src/common.h
+index ef5546de..b38b3f7b 100644
+--- a/src/common.h
++++ b/src/common.h
+@@ -79,10 +79,6 @@ char (&ArraySizeHelper(const T (&array)[N]))[N];
+ #endif
+ #endif
+ 
+-#ifdef IS_BIG_ENDIAN
+-inline uint32 Swap32(uint32 x) { return __builtin_bswap32(x); }
+-#endif
+-
+ namespace sentencepiece {
+ #ifdef OS_WIN
+ namespace win32 {
+@@ -90,6 +86,12 @@ std::wstring Utf8ToWide(const absl::string_view input);
+ }  // namespace win32
+ #endif
+ 
++#ifdef IS_BIG_ENDIAN
++namespace util {
++inline uint32 Swap32(uint32 x) { return __builtin_bswap32(x); }
++}  // namespace util
++#endif
++
+ namespace error {
+ 
+ void Abort();
+diff --git a/src/normalizer.cc b/src/normalizer.cc
+index 2ab80849..53e43c4d 100644
+--- a/src/normalizer.cc
++++ b/src/normalizer.cc
+@@ -260,14 +260,14 @@ std::string Normalizer::EncodePrecompiledCharsMap(
+   std::string blob;
+   blob.append(string_util::EncodePOD<uint32>(trie_blob.size()));
+   blob.append(trie_blob.data(), trie_blob.size());
+-  blob.append(normalized.data(), normalized.size());
+ 
+ #ifdef IS_BIG_ENDIAN
+   uint32 *data = reinterpret_cast<uint32 *>(const_cast<char *>(blob.data()));
+-  for (int i = 0; i <= trie_blob.size() / 4; ++i)
+-    data[i] = util::Swap32(data[i]);
++  for (int i = 0; i < blob.size() / 4; ++i) data[i] = util::Swap32(data[i]);
+ #endif
+ 
++  blob.append(normalized.data(), normalized.size());
++
+   return blob;
+ }
+ 
+@@ -279,8 +279,7 @@ util::Status Normalizer::DecodePrecompiledCharsMap(
+   if (blob.size() <= sizeof(trie_blob_size) ||
+       !string_util::DecodePOD<uint32>(
+           absl::string_view(blob.data(), sizeof(trie_blob_size)),
+-          &trie_blob_size) ||
+-      trie_blob_size >= blob.size()) {
++          &trie_blob_size)) {
+     return util::InternalError("Blob for normalization rule is broken.");
+   }
+ 
+@@ -288,15 +287,17 @@ util::Status Normalizer::DecodePrecompiledCharsMap(
+   trie_blob_size = util::Swap32(trie_blob_size);
+ #endif
+ 
+-  if (trie_blob_size >= blob.size())
++  if (trie_blob_size >= blob.size()) {
+     return util::InternalError("Trie data size exceeds the input blob size.");
++  }
+ 
+   blob.remove_prefix(sizeof(trie_blob_size));
+ 
+ #ifdef IS_BIG_ENDIAN
++  CHECK_OR_RETURN(buffer);
+   buffer->assign(blob.data(), trie_blob_size);
+   uint32 *data = reinterpret_cast<uint32 *>(const_cast<char *>(buffer->data()));
+-  for (int i = 0; i < trie_blob_size / 4; ++i) data[i] = util::Swap32(data[i]);
++  for (int i = 0; i < buffer->size() / 4; ++i) data[i] = util::Swap32(data[i]);
+   *trie_blob = absl::string_view(buffer->data(), trie_blob_size);
+ #else
+   *trie_blob = absl::string_view(blob.data(), trie_blob_size);
+diff --git a/src/unigram_model_trainer_test.cc b/src/unigram_model_trainer_test.cc
+index 9d2c5262..31da90ba 100644
+--- a/src/unigram_model_trainer_test.cc
++++ b/src/unigram_model_trainer_test.cc
+@@ -106,6 +106,7 @@ TrainerResult RunTrainer(const std::vector<std::string>& input, int size,
+ 
+   TrainerResult res;
+   res.seed_pieces_and_probs = seed_pieces;
++  std::sort(pieces.begin(), pieces.end());
+   res.sentence_pieces = absl::StrJoin(pieces, " ");
+   return res;
+ }
+@@ -119,10 +120,8 @@ TEST(UnigramTrainerTest, BasicTest) {
+   // Check seed pieces.
+   EXPECT_EQ(27, res.seed_pieces_and_probs.size());
+ 
+-  LOG(INFO) << "[" << res.sentence_pieces << "]";
+-
+   // Check final pieces.
+-  EXPECT_EQ("i a n y m l e apple ve O P r g t an v ▁ b A le ▁an p d h",
++  EXPECT_EQ("A O P a an apple b d e g h i l le m n p r t v ve y ▁ ▁an",
+             res.sentence_pieces);
+ }
+ 

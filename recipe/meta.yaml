@@ -1,4 +1,4 @@
-{% set version = "0.1.95" %}
+{% set version = "0.1.99" %}
 
 package:
   name: sentencepiece
@@ -6,7 +6,11 @@ package:
 
 source:
   url: https://github.com/google/sentencepiece/archive/v{{ version }}.tar.gz
-  sha256: 1c0bd83e03f71a10fc934b7ce996e327488b838587f03159fd392c77c7701389
+  sha256: 63617eaf56c7a3857597dcd8780461f57dd21381b56a27716ef7d7e02e14ced4
+  patches:
+    # Can be removed in v0.2.0
+    # See: https://github.com/google/sentencepiece/commit/827591a0c552f2187aac8b8e0f999e8ff31aad81
+    - patches/001_big_endian_fix.patch
 
 build:
   number: 0
@@ -18,18 +22,21 @@ build:
     - "/lib64/ld-linux-x86-64.so.*"   # [linux and x86_64]
     - "/lib64/ld-linux-aarch64.so.*"  # [linux and aarch64]
     - "/lib64/ld64.so.*"              # [linux and (ppc64le or s390x)]
+    - "$RPATH/ld64.so.1"              # [linux and s390x]
 
 requirements:
+  build:
+    - cmake
+    - {{ compiler('cxx') }}
+    - make        # [not win]
+    - pkg-config  # [not win]
+    - patch  # [not win]
+    - m2-patch  # [win]
   host:
     - pip
     - setuptools
     - wheel
     - python
-    - cmake
-    - {{ compiler('cxx') }}
-#    - gperftools  # [unix]
-    - make        # [not win]
-    - pkg-config  # [not win]
   run:
     - python
 
