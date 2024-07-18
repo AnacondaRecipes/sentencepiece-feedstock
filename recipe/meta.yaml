@@ -62,13 +62,13 @@ outputs:
       build:
         - libprotobuf     # [build_platform != target_platform]
         - {{ compiler('cxx') }}
-        - {{ stdlib('c') }}
+        #- {{ stdlib('c') }}
         - cmake
         - ninja
       host:
         - libabseil
         - libprotobuf
-        - pthreads-win32  # [win]
+        #- pthreads-win32  # [win]
       run:
         # sentencepiece uses PUBLIC linkage for abseil, which is correct
         # (unfortunately) because it contains abseil types in its API
@@ -124,14 +124,14 @@ outputs:
       build:
         - libprotobuf     # [build_platform != target_platform]
         - {{ compiler('cxx') }}
-        - {{ stdlib('c') }}
+        #- {{ stdlib('c') }}
         - cmake
         - ninja
       host:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
         - libabseil
         - libprotobuf
-        - pthreads-win32  # [win]
+        #- pthreads-win32  # [win]
       run:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
 
@@ -152,7 +152,7 @@ outputs:
         - python                                 # [build_platform != target_platform]
         - cross-python_{{ target_platform }}     # [build_platform != target_platform]
         - {{ compiler('cxx') }}
-        - {{ stdlib('c') }}
+        #- {{ stdlib('c') }}
         - pkg-config   # [unix]
       host:
         - pip
@@ -196,6 +196,8 @@ about:
     extension of direct training from raw sentences. SentencePiece allows us to
     make a purely end-to-end system that does not depend on language-specific
     pre/postprocessing.
+  doc_url: https://github.com/google/sentencepiece/blob/master/doc/api.md
+  dev_url: https://github.com/google/sentencepiece/
 
 extra:
   recipe-maintainers:
