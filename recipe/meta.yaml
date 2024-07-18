@@ -26,8 +26,6 @@ source:
 
 build:
   number: 2
-  # temporary workaround to pending clang activation issues
-  skip: true # [(osx and x86_64) and py>310]
 
 outputs:
   - name: sentencepiece
@@ -42,7 +40,12 @@ outputs:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
         # needs python host dep to avoid creating the same wrapper for
         # different sentencepiece-python builds due to coinciding hashes
-        - python
+        #  3.8.19 build 1, 3.9.19 build 2, 3.10.14 build 1, 3.11.9 build 1, 3.12.4 build2
+        - python =3.8.19=*1 # [py38]
+        - python =3.9.19=*2 # [py39]
+        - python =3.10.14=*1 # [py310]
+        - python =3.11.9=*1 # [py311]
+        - python =3.12.4=*2 # [py312]
       run:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
         - {{ pin_subpackage('sentencepiece-spm', exact=True) }}
@@ -160,13 +163,23 @@ outputs:
         - pkg-config   # [unix]
       host:
         - pip
-        - python
+        #  3.8.19 build 1, 3.9.19 build 2, 3.10.14 build 1, 3.11.9 build 1, 3.12.4 build2
+        - python =3.8.19=*1 # [py38]
+        - python =3.9.19=*2 # [py39]
+        - python =3.10.14=*1 # [py310]
+        - python =3.11.9=*1 # [py311]
+        - python =3.12.4=*2 # [py312]
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
         - libprotobuf
         # host deps of static libsentencepiece leak to consumers
         - libabseil    # [win]
       run:
-        - python
+        #  3.8.19 build 1, 3.9.19 build 2, 3.10.14 build 1, 3.11.9 build 1, 3.12.4 build2
+        - python =3.8.19=*1 # [py38]
+        - python =3.9.19=*2 # [py39]
+        - python =3.10.14=*1 # [py310]
+        - python =3.11.9=*1 # [py311]
+        - python =3.12.4=*2 # [py312]
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
 
     test:
