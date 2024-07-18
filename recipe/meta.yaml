@@ -26,6 +26,8 @@ source:
 
 build:
   number: 2
+  # temporary workaround to pending clang activation issues
+  skip: true # [(osx and x86_64) and py>310]
 
 outputs:
   - name: sentencepiece
@@ -58,6 +60,8 @@ outputs:
         # not clear what ABI-compatibility of sentencepiece versions are;
         # for now, use same version at run & build time
         - {{ pin_subpackage("libsentencepiece", max_pin="x.x.x") }}
+      missing_dso_whitelist: # [linux and s390x]
+        - "$RPATH/ld64.so.1"   # [linux and s390x]
     requirements:
       build:
         - libprotobuf     # [build_platform != target_platform]
