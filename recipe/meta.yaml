@@ -49,7 +49,7 @@ outputs:
       run:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
         - {{ pin_subpackage('sentencepiece-spm', exact=True) }}
-        - {{ pin_subpackage('sentencepiece-python', exact=True) }}
+        - sentencepiece-python {{ version }} # don't pin_subpackage; that would pin to a single python version
     test:
       commands:
         # tested in other outputs
