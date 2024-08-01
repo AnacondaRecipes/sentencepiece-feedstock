@@ -19,7 +19,7 @@ source:
     # install CMake metadata
     - patches/0005-create-and-install-CMake-metadata.patch
     # fix abseil setup on windows
-    - patches/0006-also-link-to-static-absl_flags_-on-windows.patch
+    #- patches/0006-also-link-to-static-absl_flags_-on-windows.patch
     # backport of https://github.com/google/sentencepiece/pull/979:
     # avoid having to specify CMAKE_INSTALL_{LIB,INCLUDE}DIR due to wrong order
     - patches/0007-move-setting-of-default-CMAKE_INSTALL_-BIN-INCLUDE-L.patch
