@@ -131,7 +131,7 @@ outputs:
         - ninja
       host:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
-        - libabseil
+        - libabseil {{ libabseil }}
         - libprotobuf
         #- pthreads-win32  # [win]
       run:
