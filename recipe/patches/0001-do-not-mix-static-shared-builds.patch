@@ -1,0 +1,53 @@
+From 2fe3e37744c810590e631c01fb57133080fc5f46 Mon Sep 17 00:00:00 2001
+From: "H. Vetinari" <h.vetinari@gmx.com>
+Date: Thu, 2 Dec 2021 08:39:53 +1100
+Subject: [PATCH 1/7] do not mix static & shared builds
+
+---
+ src/CMakeLists.txt | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 8d4a34f..fbdf238 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -228,18 +228,18 @@ if (SPM_ENABLE_SHARED)
+     target_link_libraries(sentencepiece log)
+     target_link_libraries(sentencepiece_train log)
+   endif()
+-endif()
+-
+-add_library(sentencepiece-static STATIC ${SPM_SRCS})
+-add_library(sentencepiece_train-static STATIC ${SPM_TRAIN_SRCS})
++else()
++  add_library(sentencepiece-static STATIC ${SPM_SRCS})
++  add_library(sentencepiece_train-static STATIC ${SPM_TRAIN_SRCS})
+ 
+-target_link_libraries(sentencepiece-static INTERFACE ${SPM_LIBS})
+-target_link_libraries(sentencepiece_train-static INTERFACE sentencepiece-static ${SPM_LIBS})
++  target_link_libraries(sentencepiece-static INTERFACE ${SPM_LIBS})
++  target_link_libraries(sentencepiece_train-static INTERFACE sentencepiece-static ${SPM_LIBS})
++endif()
+ 
+ if (SPM_ENABLE_SHARED)
+   target_link_libraries(sentencepiece ${SPM_LIBS})
+   target_link_libraries(sentencepiece_train ${SPM_LIBS} sentencepiece)
+-  set(SPM_INSTALLTARGETS sentencepiece sentencepiece_train sentencepiece-static sentencepiece_train-static)
++  set(SPM_INSTALLTARGETS sentencepiece sentencepiece_train)
+   set_target_properties(sentencepiece sentencepiece_train PROPERTIES SOVERSION 0 VERSION 0.0.0)
+   set_target_properties(sentencepiece PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS YES)
+   set_target_properties(sentencepiece_train PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS YES)
+@@ -254,10 +254,10 @@ else()
+   add_library(sentencepiece ALIAS sentencepiece-static)
+   add_library(sentencepiece_train ALIAS sentencepiece_train-static)
+   set(SPM_INSTALLTARGETS sentencepiece-static sentencepiece_train-static)
+-endif()
+ 
+-set_target_properties(sentencepiece-static PROPERTIES OUTPUT_NAME "sentencepiece")
+-set_target_properties(sentencepiece_train-static PROPERTIES OUTPUT_NAME "sentencepiece_train")
++  set_target_properties(sentencepiece-static PROPERTIES OUTPUT_NAME "sentencepiece")
++  set_target_properties(sentencepiece_train-static PROPERTIES OUTPUT_NAME "sentencepiece_train")
++endif()
+ 
+ if (NOT MSVC)
+   if (SPM_COVERAGE)

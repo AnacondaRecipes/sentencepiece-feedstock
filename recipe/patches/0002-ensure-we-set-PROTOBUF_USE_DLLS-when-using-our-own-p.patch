@@ -1,0 +1,26 @@
+From 185e8cd8603d188cccdb6f170a60d2984211b70c Mon Sep 17 00:00:00 2001
+From: "H. Vetinari" <h.vetinari@gmx.com>
+Date: Thu, 2 Dec 2021 10:05:12 +1100
+Subject: [PATCH 2/7] ensure we set PROTOBUF_USE_DLLS when using our own
+ protobuf
+
+---
+ src/CMakeLists.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index fbdf238..2b8aefa 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -71,6 +71,11 @@ if (SPM_PROTOBUF_PROVIDER STREQUAL "internal")
+   include_directories(builtin_pb)
+ elseif (SPM_PROTOBUF_PROVIDER STREQUAL "package")
+   find_package(Protobuf REQUIRED)
++  if (MSVC)
++   add_definitions("/DPROTOBUF_USE_DLLS")
++  else()
++   add_definitions("-DPROTOBUF_USE_DLLS")
++  endif()
+   include_directories(${Protobuf_INCLUDE_DIRS})
+   protobuf_generate_cpp(SPM_PROTO_SRCS SPM_PROTO_HDRS sentencepiece.proto)
+   protobuf_generate_cpp(SPM_MODEL_PROTO_SRCS SPM_MODEL_PROTO_HDRS sentencepiece_model.proto)

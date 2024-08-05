@@ -1,0 +1,101 @@
+From b41a7c9f4ee6efd11a1a265fcb833579098effd1 Mon Sep 17 00:00:00 2001
+From: "H. Vetinari" <h.vetinari@gmx.com>
+Date: Wed, 18 Jan 2023 19:44:15 +1100
+Subject: [PATCH 5/7] create and install CMake metadata
+
+---
+ CMakeLists.txt               | 10 ++++++++++
+ sentencepieceConfig.cmake.in |  8 ++++++++
+ src/CMakeLists.txt           | 17 +++++++++++++----
+ 3 files changed, 31 insertions(+), 4 deletions(-)
+ create mode 100644 sentencepieceConfig.cmake.in
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index deb3043..56830cf 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -146,6 +146,16 @@ if (TRUE)
+   install(FILES "${CMAKE_CURRENT_BINARY_DIR}/sentencepiece.pc" DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+ endif()
+ 
++include(CMakePackageConfigHelpers)
++configure_package_config_file(
++  sentencepieceConfig.cmake.in
++  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
++  INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
++)
++install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
++  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
++)
++
+ include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_BINARY_DIR})
+ 
+ if (SPM_BUILD_TEST)
+diff --git a/sentencepieceConfig.cmake.in b/sentencepieceConfig.cmake.in
+new file mode 100644
+index 0000000..b4c0474
+--- /dev/null
++++ b/sentencepieceConfig.cmake.in
+@@ -0,0 +1,8 @@
++@PACKAGE_INIT@
++
++# sentencepiece has abseil types in its API and
++# therefore has it in its public link interface
++find_package(absl REQUIRED)
++
++# Targets
++include(${CMAKE_CURRENT_LIST_DIR}/sentencepieceTargets.cmake)
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 2b8aefa..eed204f 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -244,7 +244,7 @@ endif()
+ if (SPM_ENABLE_SHARED)
+   target_link_libraries(sentencepiece ${SPM_LIBS})
+   target_link_libraries(sentencepiece_train ${SPM_LIBS} sentencepiece)
+-  set(SPM_INSTALLTARGETS sentencepiece sentencepiece_train)
++  set(SPM_LIBTARGETS sentencepiece sentencepiece_train)
+   set_target_properties(sentencepiece sentencepiece_train PROPERTIES SOVERSION 0 VERSION 0.0.0)
+   set_target_properties(sentencepiece PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS YES)
+   set_target_properties(sentencepiece_train PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS YES)
+@@ -258,7 +258,7 @@ if (SPM_ENABLE_SHARED)
+ else()
+   add_library(sentencepiece ALIAS sentencepiece-static)
+   add_library(sentencepiece_train ALIAS sentencepiece_train-static)
+-  set(SPM_INSTALLTARGETS sentencepiece-static sentencepiece_train-static)
++  set(SPM_LIBTARGETS sentencepiece-static sentencepiece_train-static)
+ 
+   set_target_properties(sentencepiece-static PROPERTIES OUTPUT_NAME "sentencepiece")
+   set_target_properties(sentencepiece_train-static PROPERTIES OUTPUT_NAME "sentencepiece_train")
+@@ -305,7 +305,7 @@ if (SPM_ENABLE_NFKC_COMPILE)
+   target_link_libraries(compile_charsmap sentencepiece sentencepiece_train)
+ endif()
+ 
+-list(APPEND SPM_INSTALLTARGETS
++set(SPM_BINTARGETS
+   spm_encode spm_decode spm_normalize spm_train spm_export_vocab)
+ 
+ if (CMAKE_SYSTEM_NAME STREQUAL "iOS")
+@@ -315,12 +315,21 @@ if (CMAKE_SYSTEM_NAME STREQUAL "iOS")
+     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+ else()
+-install(TARGETS ${SPM_INSTALLTARGETS}
++install(TARGETS ${SPM_BINTARGETS}
+   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+ endif()
+ 
++install(TARGETS ${SPM_LIBTARGETS}
++  EXPORT sentencepieceTargets
++  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
++  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
++  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
++install(EXPORT sentencepieceTargets
++  FILE sentencepieceTargets.cmake
++  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/sentencepiece")
++
+ install(FILES sentencepiece_trainer.h sentencepiece_processor.h
+   DESTINATION ${CMAKE_INSTALL_INCDIR})
+ if (NOT SPM_PROTOBUF_PROVIDER STREQUAL "internal")

@@ -1,0 +1,24 @@
+From e05172c6bfab80fd02d50d8bafad25cca19edee7 Mon Sep 17 00:00:00 2001
+From: "H. Vetinari" <h.vetinari@gmx.com>
+Date: Mon, 12 Dec 2022 14:36:45 +1100
+Subject: [PATCH 4/7] also install pkg-config files on windows
+
+---
+ CMakeLists.txt | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 9fa37fa..deb3043 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -142,9 +142,7 @@ join_paths(includedir_for_pc_file "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
+ configure_file("${PROJECT_SOURCE_DIR}/config.h.in" "config.h")
+ configure_file("${PROJECT_SOURCE_DIR}/sentencepiece.pc.in" "sentencepiece.pc" @ONLY)
+ 
+-if (NOT MSVC)
+-  # suppress warning for C++11 features.
+-#  add_definitions("-Wno-deprecated-declarations -Wno-deprecated-enum-enum-conversion")
++if (TRUE)
+   install(FILES "${CMAKE_CURRENT_BINARY_DIR}/sentencepiece.pc" DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+ endif()
+ 
