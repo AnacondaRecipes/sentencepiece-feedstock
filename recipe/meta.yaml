@@ -132,7 +132,7 @@ outputs:
       host:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
         - libabseil {{ libabseil }}
-        - libprotobuf
+        - libprotobuf {{ libprotobuf }}
         #- pthreads-win32  # [win]
       run:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
