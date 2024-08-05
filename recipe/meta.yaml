@@ -68,7 +68,7 @@ outputs:
         - cmake
         - ninja
       host:
-        - libabseil
+        - libabseil {{ libabseil }}
         - libprotobuf
         #- pthreads-win32  # [win]
       run:
