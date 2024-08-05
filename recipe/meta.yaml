@@ -69,7 +69,7 @@ outputs:
         - ninja
       host:
         - libabseil {{ libabseil }}
-        - libprotobuf
+        - libprotobuf {{ libprotobuf }}
         #- pthreads-win32  # [win]
       run:
         # sentencepiece uses PUBLIC linkage for abseil, which is correct
