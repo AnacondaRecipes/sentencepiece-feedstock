@@ -162,7 +162,7 @@ outputs:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
         - libprotobuf {{ libprotobuf }}
         # host deps of static libsentencepiece leak to consumers
-        - libabseil    # [win]
+        - libabseil {{ libabseil }}   # [win]
       run:
         - python
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
