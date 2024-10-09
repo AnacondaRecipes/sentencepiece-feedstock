@@ -1,7 +1,7 @@
 From 2e30e979aa1d4b6ef58c9885537736ed6566e26c Mon Sep 17 00:00:00 2001
 From: "H. Vetinari" <h.vetinari@gmx.com>
 Date: Tue, 20 Feb 2024 18:43:25 +1100
-Subject: [PATCH 7/7] move setting of default
+Subject: [PATCH 7/8] move setting of default
  CMAKE_INSTALL_{BIN,INCLUDE,LIB}DIR before first use
 
 also unify spelling of CMAKE_INSTALL_INCLUDEDIR following GNUInstallDirs

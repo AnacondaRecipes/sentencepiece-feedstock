@@ -1,0 +1,11 @@
+--- src/CMakeLists.txt	2024-10-09 22:12:52.284579786 +0200
++++ src/CMakeLists.txt	2024-10-09 22:13:21.707444464 +0200
+@@ -333,7 +333,7 @@
+ install(FILES sentencepiece_trainer.h sentencepiece_processor.h
+   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+ if (NOT SPM_PROTOBUF_PROVIDER STREQUAL "internal")
+-  install(FILES ${SPM_PROTO_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
++  install(FILES ${SPM_PROTO_HDRS} builtin_pb/sentencepiece_model.pb.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+ endif()
+ 
+ file(TO_NATIVE_PATH "${PROJECT_SOURCE_DIR}/data" data_dir)

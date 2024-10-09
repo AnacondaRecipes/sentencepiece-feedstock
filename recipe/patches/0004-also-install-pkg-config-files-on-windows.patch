@@ -1,7 +1,7 @@
 From e05172c6bfab80fd02d50d8bafad25cca19edee7 Mon Sep 17 00:00:00 2001
 From: "H. Vetinari" <h.vetinari@gmx.com>
 Date: Mon, 12 Dec 2022 14:36:45 +1100
-Subject: [PATCH 4/7] also install pkg-config files on windows
+Subject: [PATCH 4/8] also install pkg-config files on windows
 
 ---
  CMakeLists.txt | 4 +---

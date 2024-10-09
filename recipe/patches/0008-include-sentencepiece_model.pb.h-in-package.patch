@@ -1,0 +1,25 @@
+From acd9f7e7bd2eda3cb32ce27ab099508e3c4a1bca Mon Sep 17 00:00:00 2001
+From: Jack Olivieri <jolivieri@anaconda.com>
+Date: Wed, 9 Oct 2024 22:24:40 +0200
+Subject: [PATCH 8/8] include sentencepiece_model.pb.h in package
+
+---
+ src/CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index a612357..0fa5e4d 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -333,7 +333,7 @@ install(EXPORT sentencepieceTargets
+ install(FILES sentencepiece_trainer.h sentencepiece_processor.h
+   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+ if (NOT SPM_PROTOBUF_PROVIDER STREQUAL "internal")
+-  install(FILES ${SPM_PROTO_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
++  install(FILES ${SPM_PROTO_HDRS} builtin_pb/sentencepiece_model.pb.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+ endif()
+ 
+ file(TO_NATIVE_PATH "${PROJECT_SOURCE_DIR}/data" data_dir)
+-- 
+2.39.5 (Apple Git-154)
+
