@@ -23,6 +23,8 @@ source:
     # backport of https://github.com/google/sentencepiece/pull/979:
     # avoid having to specify CMAKE_INSTALL_{LIB,INCLUDE}DIR due to wrong order
     - patches/0007-move-setting-of-default-CMAKE_INSTALL_-BIN-INCLUDE-L.patch
+    # this header file gets built along with other ones and occasionally is neeeded downstream (e.g. fairseq2)
+    - patches/0008-include-sentencepiece_model-in-package.patch
 
 build:
   number: 2
