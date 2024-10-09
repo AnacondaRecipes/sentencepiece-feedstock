@@ -1,22 +1,21 @@
-From acd9f7e7bd2eda3cb32ce27ab099508e3c4a1bca Mon Sep 17 00:00:00 2001
+From 571b24f0302b4a423e5204dd676dc91462632852 Mon Sep 17 00:00:00 2001
 From: Jack Olivieri <jolivieri@anaconda.com>
 Date: Wed, 9 Oct 2024 22:24:40 +0200
 Subject: [PATCH 8/8] include sentencepiece_model.pb.h in package
 
 ---
- src/CMakeLists.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ src/CMakeLists.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index a612357..0fa5e4d 100644
+index a612357..7e04009 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -333,7 +333,7 @@ install(EXPORT sentencepieceTargets
- install(FILES sentencepiece_trainer.h sentencepiece_processor.h
+@@ -334,6 +334,7 @@ install(FILES sentencepiece_trainer.h sentencepiece_processor.h
    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
  if (NOT SPM_PROTOBUF_PROVIDER STREQUAL "internal")
--  install(FILES ${SPM_PROTO_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-+  install(FILES ${SPM_PROTO_HDRS} builtin_pb/sentencepiece_model.pb.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+   install(FILES ${SPM_PROTO_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
++  install(FILES ${SPM_MODEL_PROTO_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
  endif()
  
  file(TO_NATIVE_PATH "${PROJECT_SOURCE_DIR}/data" data_dir)
