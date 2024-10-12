@@ -29,6 +29,11 @@ source:
 build:
   number: 3
 
+requirements:
+  build:
+    - patch  # [not win]
+    - m2-patch  # [win]
+
 outputs:
   - name: sentencepiece
     # metapackage that holds everything together
