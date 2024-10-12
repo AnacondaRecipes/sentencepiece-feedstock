@@ -216,3 +216,6 @@ extra:
     - oblute
     - h-vetinari
   feedstock-name: sentencepiece
+  skip-lints:
+    - patch_must_be_in_build
+    - missing_imports_or_run_test_py
