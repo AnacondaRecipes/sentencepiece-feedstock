@@ -12,6 +12,7 @@ cmake -G "Ninja" ^
     -DSPM_ENABLE_TCMALLOC=OFF ^
     -DSPM_ABSL_PROVIDER="package" ^
     -DSPM_PROTOBUF_PROVIDER="package" ^
+    -DSPM_USE_BUILTIN_PROTOBUF=OFF ^
     ..
 IF %ERRORLEVEL% NEQ 0 exit 1
 

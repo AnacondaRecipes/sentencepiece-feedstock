@@ -23,9 +23,16 @@ source:
     # backport of https://github.com/google/sentencepiece/pull/979:
     # avoid having to specify CMAKE_INSTALL_{LIB,INCLUDE}DIR due to wrong order
     - patches/0007-move-setting-of-default-CMAKE_INSTALL_-BIN-INCLUDE-L.patch
+    # this header file gets built along with other ones and occasionally is neeeded downstream (e.g. fairseq2)
+    - patches/0008-include-sentencepiece_model.pb.h-in-package.patch
 
 build:
-  number: 2
+  number: 3
+
+requirements:
+  build:
+    - patch  # [not win]
+    - m2-patch  # [win]
 
 outputs:
   - name: sentencepiece
@@ -209,3 +216,6 @@ extra:
     - oblute
     - h-vetinari
   feedstock-name: sentencepiece
+  skip-lints:
+    - patch_must_be_in_build
+    - missing_imports_or_run_test_py

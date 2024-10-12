@@ -1,7 +1,7 @@
 From 185e8cd8603d188cccdb6f170a60d2984211b70c Mon Sep 17 00:00:00 2001
 From: "H. Vetinari" <h.vetinari@gmx.com>
 Date: Thu, 2 Dec 2021 10:05:12 +1100
-Subject: [PATCH 2/7] ensure we set PROTOBUF_USE_DLLS when using our own
+Subject: [PATCH 2/8] ensure we set PROTOBUF_USE_DLLS when using our own
  protobuf
 
 ---

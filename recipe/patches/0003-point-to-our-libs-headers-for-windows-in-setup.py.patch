@@ -1,7 +1,7 @@
 From fec0f2f37c4c35057c31757de3ff0704afcb37d3 Mon Sep 17 00:00:00 2001
 From: "H. Vetinari" <h.vetinari@gmx.com>
 Date: Sun, 11 Dec 2022 01:09:03 +1100
-Subject: [PATCH 3/7] point to our libs / headers for windows in setup.py
+Subject: [PATCH 3/8] point to our libs / headers for windows in setup.py
 
 also do not risk building against bundled libs, nor
 setting /MT for the MSVC static runtime libs
