@@ -67,6 +67,8 @@ outputs:
         - {{ pin_subpackage("libsentencepiece", max_pin="x.x.x") }}
       missing_dso_whitelist: # [linux and s390x]
         - "$RPATH/ld64.so.1"   # [linux and s390x]
+      ignore_run_export:
+        - libprotobuf
     requirements:
       build:
         - libprotobuf     # [build_platform != target_platform]
@@ -76,7 +78,8 @@ outputs:
         - ninja
       host:
         - libabseil {{ libabseil }}
-        - libprotobuf {{ libprotobuf }}
+        # pinning protobuf to 3.20.3 because this needs to work with fairseq2, which pins pytorch 2.2.0
+        - libprotobuf 3.20.3
         #- pthreads-win32  # [win]
       run:
         # sentencepiece uses PUBLIC linkage for abseil, which is correct
@@ -129,6 +132,9 @@ outputs:
   - name: sentencepiece-spm
     script: build-lib.sh   # [unix]
     script: build-lib.bat  # [win]
+    build:
+      ignore_run_export:
+        - libprotobuf
     requirements:
       build:
         - libprotobuf     # [build_platform != target_platform]
@@ -139,7 +145,7 @@ outputs:
       host:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
         - libabseil {{ libabseil }}
-        - libprotobuf {{ libprotobuf }}
+        - libprotobuf 3.20.3
         #- pthreads-win32  # [win]
       run:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
@@ -156,6 +162,9 @@ outputs:
   - name: sentencepiece-python
     script: build-pkg.sh   # [unix]
     script: build-pkg.bat  # [win]
+    build:
+      ignore_run_export:
+        - libprotobuf
     requirements:
       build:
         - python                                 # [build_platform != target_platform]
@@ -167,7 +176,7 @@ outputs:
         - pip
         - python
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
-        - libprotobuf {{ libprotobuf }}
+        - libprotobuf 3.20.3
         # host deps of static libsentencepiece leak to consumers
         - libabseil {{ libabseil }}   # [win]
       run:
