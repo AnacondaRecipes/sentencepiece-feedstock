@@ -25,7 +25,7 @@ source:
     - patches/0007-move-setting-of-default-CMAKE_INSTALL_-BIN-INCLUDE-L.patch
 
 build:
-  number: 2
+  number: 3
 
 outputs:
   - name: sentencepiece
