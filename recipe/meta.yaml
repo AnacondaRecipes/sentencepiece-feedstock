@@ -46,9 +46,10 @@ outputs:
         - {{ pin_subpackage('sentencepiece-spm', exact=True) }}
         - sentencepiece-python {{ version }} # don't pin_subpackage; that would pin to a single python version
     test:
-      commands:
-        # tested in other outputs
-        - exit 0
+      imports:
+        # The linter wants something imported because we mentioned
+        # python in host
+        - sys
 
   - name: libsentencepiece
     script: build-lib.sh   # [unix]
@@ -62,7 +63,9 @@ outputs:
         - "$RPATH/ld64.so.1"   # [linux and s390x]
     requirements:
       build:
-        - libprotobuf     # [build_platform != target_platform]
+        - patch       # [not win]
+        - m2-patch    # [win]
+        - libprotobuf # [build_platform != target_platform]
         - {{ compiler('cxx') }}
         #- {{ stdlib('c') }}
         - cmake
