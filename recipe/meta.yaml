@@ -46,10 +46,9 @@ outputs:
         - {{ pin_subpackage('sentencepiece-spm', exact=True) }}
         - sentencepiece-python {{ version }} # don't pin_subpackage; that would pin to a single python version
     test:
-      imports:
-        # The linter wants something imported because we mentioned
-        # python in host
-        - sys
+      commands:
+        # tested in other outputs
+        - exit 0
 
   - name: libsentencepiece
     script: build-lib.sh   # [unix]
@@ -212,3 +211,5 @@ extra:
     - oblute
     - h-vetinari
   feedstock-name: sentencepiece
+  skip-lints:
+    - missing_imports_or_run_test_py
