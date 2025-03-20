@@ -25,7 +25,7 @@ source:
     - patches/0007-move-setting-of-default-CMAKE_INSTALL_-BIN-INCLUDE-L.patch
 
 build:
-  number: 3
+  number: 4
 
 outputs:
   - name: sentencepiece
@@ -70,8 +70,8 @@ outputs:
         - cmake
         - ninja
       host:
-        - libabseil {{ libabseil }}
-        - libprotobuf {{ libprotobuf }}
+        - libabseil 20250127.0
+        - libprotobuf 5.29.3
         #- pthreads-win32  # [win]
       run:
         # sentencepiece uses PUBLIC linkage for abseil, which is correct
@@ -133,8 +133,8 @@ outputs:
         - ninja
       host:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
-        - libabseil {{ libabseil }}
-        - libprotobuf {{ libprotobuf }}
+        - libabseil 20250127.0
+        - libprotobuf 5.29.3
         #- pthreads-win32  # [win]
       run:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
@@ -162,9 +162,9 @@ outputs:
         - pip
         - python
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
-        - libprotobuf {{ libprotobuf }}
+        - libprotobuf 5.29.3
         # host deps of static libsentencepiece leak to consumers
-        - libabseil {{ libabseil }}   # [win]
+        - libabseil 20250127.0  # [win]
       run:
         - python
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
