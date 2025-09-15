@@ -61,8 +61,6 @@ outputs:
         - {{ pin_subpackage("libsentencepiece", max_pin="x.x.x") }}
     requirements:
       build:
-        - patch       # [not win]
-        - m2-patch    # [win]
         - libprotobuf # [build_platform != target_platform]
         - {{ compiler('cxx') }}
         - {{ stdlib('c') }}
