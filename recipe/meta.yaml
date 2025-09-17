@@ -83,6 +83,7 @@ outputs:
         # cmake needs compiler to be able to run package detection, see
         # https://discourse.cmake.org/t/questions-about-find-package-cli-msvc/6194
         - {{ compiler('cxx') }}
+        - {{ stdlib('c') }}
         - cmake
         - ninja
         - pkg-config
@@ -132,7 +133,6 @@ outputs:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
         - libabseil {{ libabseil }}
         - libprotobuf {{ libprotobuf }}
-        #- pthreads-win32  # [win]
       run:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
 
