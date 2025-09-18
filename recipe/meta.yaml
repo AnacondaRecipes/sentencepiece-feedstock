@@ -25,7 +25,7 @@ source:
     - patches/0007-move-setting-of-default-CMAKE_INSTALL_-BIN-INCLUDE-L.patch
 
 build:
-  number: 4
+  number: 5
 
 outputs:
   - name: sentencepiece
@@ -45,6 +45,7 @@ outputs:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
         - {{ pin_subpackage('sentencepiece-spm', exact=True) }}
         - sentencepiece-python {{ version }} # don't pin_subpackage; that would pin to a single python version
+        - python
     test:
       commands:
         # tested in other outputs
@@ -58,20 +59,16 @@ outputs:
         # not clear what ABI-compatibility of sentencepiece versions are;
         # for now, use same version at run & build time
         - {{ pin_subpackage("libsentencepiece", max_pin="x.x.x") }}
-      missing_dso_whitelist: # [linux and s390x]
-        - "$RPATH/ld64.so.1"   # [linux and s390x]
     requirements:
       build:
-        - patch       # [not win]
-        - m2-patch    # [win]
         - libprotobuf # [build_platform != target_platform]
         - {{ compiler('cxx') }}
-        #- {{ stdlib('c') }}
+        - {{ stdlib('c') }}
         - cmake
         - ninja
       host:
-        - libabseil 20250127.0
-        - libprotobuf 5.29.3
+        - libabseil {{ libabseil }}
+        - libprotobuf {{ libprotobuf }}
         #- pthreads-win32  # [win]
       run:
         # sentencepiece uses PUBLIC linkage for abseil, which is correct
@@ -86,6 +83,7 @@ outputs:
         # cmake needs compiler to be able to run package detection, see
         # https://discourse.cmake.org/t/questions-about-find-package-cli-msvc/6194
         - {{ compiler('cxx') }}
+        - {{ stdlib('c') }}
         - cmake
         - ninja
         - pkg-config
@@ -128,14 +126,13 @@ outputs:
       build:
         - libprotobuf     # [build_platform != target_platform]
         - {{ compiler('cxx') }}
-        #- {{ stdlib('c') }}
+        - {{ stdlib('c') }}
         - cmake
         - ninja
       host:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
-        - libabseil 20250127.0
-        - libprotobuf 5.29.3
-        #- pthreads-win32  # [win]
+        - libabseil {{ libabseil }}
+        - libprotobuf {{ libprotobuf }}
       run:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
 
@@ -156,15 +153,15 @@ outputs:
         - python                                 # [build_platform != target_platform]
         - cross-python_{{ target_platform }}     # [build_platform != target_platform]
         - {{ compiler('cxx') }}
-        #- {{ stdlib('c') }}
+        - {{ stdlib('c') }}
         - pkg-config   # [unix]
       host:
         - pip
         - python
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
-        - libprotobuf 5.29.3
+        - libprotobuf {{ libprotobuf }}
         # host deps of static libsentencepiece leak to consumers
-        - libabseil 20250127.0  # [win]
+        - libabseil {{ libabseil }}  # [win]
       run:
         - python
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
