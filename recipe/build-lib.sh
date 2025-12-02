@@ -16,6 +16,7 @@ cmake -G "Ninja" \
     -DSPM_ENABLE_TCMALLOC=OFF \
     -DSPM_ABSL_PROVIDER="package" \
     -DSPM_PROTOBUF_PROVIDER="package" \
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
     ${CMAKE_ARGS} \
     ..
 
