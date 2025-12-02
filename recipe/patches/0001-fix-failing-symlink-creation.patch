@@ -1,0 +1,43 @@
+From 4cedab2d3a2fe83bc1328f66e51585db4a892bc3 Mon Sep 17 00:00:00 2001
+From: Ivan Iziumov <iiziumov@anaconda.com>
+Date: Tue, 2 Dec 2025 14:53:08 +0100
+Subject: [PATCH] fix failing symlink creation
+
+---
+ CMakeLists.txt | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index c0ae963..2b9c8a3 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -194,14 +194,23 @@ elseif (SPM_ABSL_PROVIDER STREQUAL "module")
+ elseif (SPM_ABSL_PROVIDER STREQUAL "package")
+   find_package(absl REQUIRED)
+   get_target_property(ABSL_INCLUDE_DIRS absl::base INTERFACE_INCLUDE_DIRECTORIES)
++
+   if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/absl.org)
+-    file(RENAME ${CMAKE_CURRENT_SOURCE_DIR}/third_party/absl ${CMAKE_CURRENT_SOURCE_DIR}/third_party/absl.org)
+-    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
+-        ${ABSL_INCLUDE_DIRS}/absl ${CMAKE_CURRENT_SOURCE_DIR}/third_party/absl)
++    file(RENAME
++      ${CMAKE_CURRENT_SOURCE_DIR}/third_party/absl
++      ${CMAKE_CURRENT_SOURCE_DIR}/third_party/absl.org
++    )
++
++    file(COPY
++      ${ABSL_INCLUDE_DIRS}/absl
++      DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/third_party
++    )
+   endif()
++
+   include_directories(${ABSL_INCLUDE_DIRS})
+ endif()
+ 
++
+ add_subdirectory(src)
+ add_subdirectory(third_party)
+ 
+-- 
+2.51.0
+

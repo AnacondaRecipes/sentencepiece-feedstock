@@ -10,6 +10,8 @@ source:
   patches:
     # trying to build both static & shared build seems to break on OSX
     - patches/0001-do-not-mix-static-shared-builds.patch
+    # Fix symlink creation failure on Windows 
+    - patches/0001-fix-failing-symlink-creation.patch  # [win]
     # set PROTOBUF_USE_DLLS
     - patches/0002-ensure-we-set-PROTOBUF_USE_DLLS-when-using-our-own-p.patch
     # ensure python bindings link to correct libs on windows
@@ -25,7 +27,7 @@ source:
     - patches/0007-move-setting-of-default-CMAKE_INSTALL_-BIN-INCLUDE-L.patch
 
 build:
-  number: 5
+  number: 6
 
 outputs:
   - name: sentencepiece
