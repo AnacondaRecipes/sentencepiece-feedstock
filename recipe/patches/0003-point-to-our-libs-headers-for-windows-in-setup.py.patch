@@ -21,8 +21,8 @@ index da68e71..b0f3f74 100755
  
 -    if len(libs) == 0:
 -      if is_sentencepiece_installed():
-+    if true:
-+      if true:
++    if True:
++      if True:
          cflags = cflags + run_pkg_config('cflags')
          libs = run_pkg_config('libs')
        else:
@@ -44,12 +44,12 @@ index da68e71..b0f3f74 100755
      libs = [
 -        '..\\build\\root\\lib\\sentencepiece.lib',
 -        '..\\build\\root\\lib\\sentencepiece_train.lib',
-+        # equivalent of -L$PREFIX/lib -lsentencepiece -lsentencepiece_train -lprotobuf
-+        os.environ["LIBRARY_LIB"] + f"\\{x}.lib"
-+        # protobuf actually has the lib-prefix in the name also on windows;
-+        # since libsentencepiece is static on windows, we also need _its_
-+        # host dependencies for the link interface, i.e. also abseil
-+        for x in ["sentencepiece", "sentencepiece_train", "libprotobuf", "abseil_dll"]
++      # equivalent of -L$PREFIX/lib -lsentencepiece -lsentencepiece_train -lprotobuf
++      os.environ["LIBRARY_LIB"] + f"\\{x}.lib"
++      # protobuf actually has the lib-prefix in the name also on windows;
++      # since libsentencepiece is static on windows, we also need _its_
++      # host dependencies for the link interface, i.e. also abseil
++      for x in ["sentencepiece", "sentencepiece_train", "libprotobuf", "abseil_dll"]
      ]
    else:
      # build library locally with cmake and vc++.
