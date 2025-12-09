@@ -1,37 +1,35 @@
-From fec0f2f37c4c35057c31757de3ff0704afcb37d3 Mon Sep 17 00:00:00 2001
-From: "H. Vetinari" <h.vetinari@gmx.com>
-Date: Sun, 11 Dec 2022 01:09:03 +1100
+From 64e2af67577224878f1dda1aba26d7b8cb1f77c0 Mon Sep 17 00:00:00 2001
+From: Patryk Kups <pkups@anaconda.com>
+Date: Tue, 9 Dec 2025 16:39:46 +0100
 Subject: [PATCH 3/7] point to our libs / headers for windows in setup.py
 
-also do not risk building against bundled libs, nor
-setting /MT for the MSVC static runtime libs
 ---
  python/setup.py | 21 +++++++++++++--------
  1 file changed, 13 insertions(+), 8 deletions(-)
 
 diff --git a/python/setup.py b/python/setup.py
-index d600321..36ed833 100755
+index da68e71..b0f3f74 100755
 --- a/python/setup.py
 +++ b/python/setup.py
-@@ -77,10 +77,11 @@ class build_ext(_build_ext):
+@@ -85,10 +85,11 @@ class build_ext(_build_ext):
    """Override build_extension to run cmake."""
  
    def build_extension(self, ext):
 -    cflags, libs = get_cflags_and_libs('../build/root')
-+    # cflags, libs = get_cflags_and_libs('./bundled/root')
++    # cflags, libs = get_cflags_and_libs('../build/root')
 +    cflags = ['-std=c++17']
  
 -    if len(libs) == 0:
 -      if is_sentencepiece_installed():
-+    if True:
-+      if True:
++    if true:
++      if true:
          cflags = cflags + run_pkg_config('cflags')
          libs = run_pkg_config('libs')
        else:
-@@ -108,17 +109,21 @@ if os.name == 'nt':
-   arch = 'win32'
-   if sys.maxsize > 2**32:
-     arch = 'amd64'
+@@ -164,17 +165,21 @@ def get_win_arch():
+ if os.name == 'nt':
+   # Must pre-install sentencepice into build directory.
+   arch = get_win_arch()
 -  if os.path.exists('..\\build\\root_{}\\lib'.format(arch)):
 +  if False:
      cflags = ['/std:c++17', '/I..\\build\\root_{}\\include'.format(arch)]
@@ -46,12 +44,15 @@ index d600321..36ed833 100755
      libs = [
 -        '..\\build\\root\\lib\\sentencepiece.lib',
 -        '..\\build\\root\\lib\\sentencepiece_train.lib',
-+      # equivalent of -L$PREFIX/lib -lsentencepiece -lsentencepiece_train -lprotobuf
-+      os.environ["LIBRARY_LIB"] + f"\\{x}.lib"
-+      # protobuf actually has the lib-prefix in the name also on windows;
-+      # since libsentencepiece is static on windows, we also need _its_
-+      # host dependencies for the link interface, i.e. also abseil
-+      for x in ["sentencepiece", "sentencepiece_train", "libprotobuf", "abseil_dll"]
++        # equivalent of -L$PREFIX/lib -lsentencepiece -lsentencepiece_train -lprotobuf
++        os.environ["LIBRARY_LIB"] + f"\\{x}.lib"
++        # protobuf actually has the lib-prefix in the name also on windows;
++        # since libsentencepiece is static on windows, we also need _its_
++        # host dependencies for the link interface, i.e. also abseil
++        for x in ["sentencepiece", "sentencepiece_train", "libprotobuf", "abseil_dll"]
      ]
    else:
      # build library locally with cmake and vc++.
+-- 
+2.39.5 (Apple Git-154)
+
