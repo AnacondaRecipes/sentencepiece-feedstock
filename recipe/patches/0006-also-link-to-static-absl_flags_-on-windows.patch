@@ -1,6 +1,6 @@
-From 4b573250b57b983fce3463325f14eca5505ab455 Mon Sep 17 00:00:00 2001
+From 2db393437e101f3271db237b4700e253114efb61 Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Tue, 9 Dec 2025 19:26:09 +0100
+Date: Tue, 9 Dec 2025 19:29:55 +0100
 Subject: [PATCH 6] also link to static absl_flags_* on windows
 
 ---
@@ -8,21 +8,21 @@ Subject: [PATCH 6] also link to static absl_flags_* on windows
  1 file changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/python/setup.py b/python/setup.py
-index 7103f99..d787f9a 100755
+index 7103f99..a984fcd 100755
 --- a/python/setup.py
 +++ b/python/setup.py
 @@ -173,13 +173,21 @@ if os.name == 'nt':
      ]
    elif True:
      cflags = ['/std:c++17', '/MD', '/I' + os.environ["LIBRARY_INC"]]
-+     # most of abseil can be built as shared, which ends up in one giant library
-+     # called abseil_dll; the absl_flags_* libraries always stay static
-+     absl_libs = [
-+         "abseil_dll", "absl_log_flags", "absl_flags_commandlineflag", "absl_flags_commandlineflag_internal",
-+         "absl_flags_config", "absl_flags_internal", "absl_flags_marshalling", "absl_flags_parse",
-+         "absl_flags_private_handle_accessor", "absl_flags_program_name", "absl_flags_reflection",
-+         "absl_flags_usage", "absl_flags_usage_internal",
-+     ]
++    # most of abseil can be built as shared, which ends up in one giant library
++    # called abseil_dll; the absl_flags_* libraries always stay static
++    absl_libs = [
++        "abseil_dll", "absl_log_flags", "absl_flags_commandlineflag", "absl_flags_commandlineflag_internal",
++        "absl_flags_config", "absl_flags_internal", "absl_flags_marshalling", "absl_flags_parse",
++        "absl_flags_private_handle_accessor", "absl_flags_program_name", "absl_flags_reflection",
++        "absl_flags_usage", "absl_flags_usage_internal",
++    ]
      libs = [
        # equivalent of -L$PREFIX/lib -lsentencepiece -lsentencepiece_train -lprotobuf
        os.environ["LIBRARY_LIB"] + f"\\{x}.lib"
