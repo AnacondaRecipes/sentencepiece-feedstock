@@ -1,6 +1,6 @@
-From d830e3c7a9a395f7db04c737dffa6771add78eb7 Mon Sep 17 00:00:00 2001
-From: "H. Vetinari" <h.vetinari@gmx.com>
-Date: Tue, 20 Feb 2024 17:43:23 +1100
+From 0aa8d86f079f4f624255a52cc2006be9ee91832e Mon Sep 17 00:00:00 2001
+From: Patryk Kups <pkups@anaconda.com>
+Date: Tue, 9 Dec 2025 17:33:32 +0100
 Subject: [PATCH 6/7] also link to static absl_flags_* on windows
 
 ---
@@ -8,10 +8,10 @@ Subject: [PATCH 6/7] also link to static absl_flags_* on windows
  1 file changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/python/setup.py b/python/setup.py
-index 36ed833..1316df3 100755
+index b0f3f74..8a5939c 100755
 --- a/python/setup.py
 +++ b/python/setup.py
-@@ -117,13 +117,21 @@ if os.name == 'nt':
+@@ -173,13 +173,21 @@ if os.name == 'nt':
      ]
    elif True:
      cflags = ['/std:c++17', '/MD', '/I' + os.environ["LIBRARY_INC"]]
@@ -24,13 +24,16 @@ index 36ed833..1316df3 100755
 +        "absl_flags_usage", "absl_flags_usage_internal",
 +    ]
      libs = [
-       # equivalent of -L$PREFIX/lib -lsentencepiece -lsentencepiece_train -lprotobuf
-       os.environ["LIBRARY_LIB"] + f"\\{x}.lib"
-       # protobuf actually has the lib-prefix in the name also on windows;
-       # since libsentencepiece is static on windows, we also need _its_
-       # host dependencies for the link interface, i.e. also abseil
--      for x in ["sentencepiece", "sentencepiece_train", "libprotobuf", "abseil_dll"]
-+      for x in ["sentencepiece", "sentencepiece_train", "libprotobuf"] + absl_libs
+         # equivalent of -L$PREFIX/lib -lsentencepiece -lsentencepiece_train -lprotobuf
+         os.environ["LIBRARY_LIB"] + f"\\{x}.lib"
+         # protobuf actually has the lib-prefix in the name also on windows;
+         # since libsentencepiece is static on windows, we also need _its_
+         # host dependencies for the link interface, i.e. also abseil
+-        for x in ["sentencepiece", "sentencepiece_train", "libprotobuf", "abseil_dll"]
++        for x in ["sentencepiece", "sentencepiece_train", "libprotobuf"] + absl_libs
      ]
    else:
      # build library locally with cmake and vc++.
+-- 
+2.39.5 (Apple Git-154)
+
