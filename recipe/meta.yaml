@@ -1,4 +1,4 @@
-{% set version = "0.2.0" %}
+{% set version = "0.2.1" %}
 
 package:
   name: sentencepiece-split
@@ -6,7 +6,7 @@ package:
 
 source:
   url: https://github.com/google/sentencepiece/archive/refs/tags/v{{ version }}.tar.gz
-  sha256: 9970f0a0afee1648890293321665e5b2efa04eaec9f1671fcf8048f456f5bb86
+  sha256: c1a59e9259c9653ad0ade653dadff074cd31f0a6ff2a11316f67bee4189a8f1b
   patches:
     # trying to build both static & shared build seems to break on OSX
     - patches/0001-do-not-mix-static-shared-builds.patch
@@ -22,12 +22,9 @@ source:
     - patches/0005-create-and-install-CMake-metadata.patch
     # fix abseil setup on windows
     - patches/0006-also-link-to-static-absl_flags_-on-windows.patch
-    # backport of https://github.com/google/sentencepiece/pull/979:
-    # avoid having to specify CMAKE_INSTALL_{LIB,INCLUDE}DIR due to wrong order
-    - patches/0007-move-setting-of-default-CMAKE_INSTALL_-BIN-INCLUDE-L.patch
 
 build:
-  number: 6
+  number: 0
 
 outputs:
   - name: sentencepiece
@@ -183,7 +180,7 @@ outputs:
         - cd python && pytest test
 
 about:
-  home: "https://github.com/google/sentencepiece/"
+  home: https://github.com/google/sentencepiece
   license: Apache-2.0
   license_family: Apache
   license_file: LICENSE
@@ -200,7 +197,7 @@ about:
     make a purely end-to-end system that does not depend on language-specific
     pre/postprocessing.
   doc_url: https://github.com/google/sentencepiece/blob/master/doc/api.md
-  dev_url: https://github.com/google/sentencepiece/
+  dev_url: https://github.com/google/sentencepiece
 
 extra:
   recipe-maintainers:
