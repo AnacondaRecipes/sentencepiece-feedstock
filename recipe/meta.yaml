@@ -66,7 +66,7 @@ outputs:
         - cmake
         - ninja
       host:
-        - libabseil
+        - libabseil {{ libabseil }}
         - libprotobuf {{ libprotobuf }}
         #- pthreads-win32  # [win]
       run:
@@ -130,7 +130,7 @@ outputs:
         - ninja
       host:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
-        - libabseil
+        - libabseil {{ libabseil }}
         - libprotobuf {{ libprotobuf }}
       run:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
@@ -160,7 +160,7 @@ outputs:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
         - libprotobuf {{ libprotobuf }}
         # host deps of static libsentencepiece leak to consumers
-        - libabseil  # [win]
+        - libabseil {{ libabseil }}  # [win]
       run:
         - python
         - {{ pin_subpackage('libsentencepiece', exact=True) }}

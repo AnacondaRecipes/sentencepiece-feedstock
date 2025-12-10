@@ -1,0 +1,2 @@
+# On CI, this value is sometimes not read from the CBC file for some reason. This is a workaround.
+libabseil: 20250814.1
