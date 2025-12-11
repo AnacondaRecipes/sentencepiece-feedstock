@@ -205,6 +205,6 @@ extra:
     - ndmaxar
     - oblute
     - h-vetinari
-  feedstock-name: sentencepiece
+
   skip-lints:
     - missing_imports_or_run_test_py
