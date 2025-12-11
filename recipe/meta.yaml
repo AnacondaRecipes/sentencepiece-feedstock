@@ -68,6 +68,8 @@ outputs:
       host:
         - libabseil {{ libabseil }}
         - libprotobuf {{ libprotobuf }}
+        # For fix random pbp problem: Library not loaded: @rpath/libzstd.1.dylib
+        - zstd {{ zstd }}
         #- pthreads-win32  # [win]
       run:
         # sentencepiece uses PUBLIC linkage for abseil, which is correct
