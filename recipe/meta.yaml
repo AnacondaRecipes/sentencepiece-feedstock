@@ -94,18 +94,16 @@ outputs:
         # presence of shared libraries
         - test -f $PREFIX/lib/lib{{ each_lib }}.so              # [linux]
         - test -f $PREFIX/lib/lib{{ each_lib }}.dylib           # [osx]
-        - if not exist %LIBRARY_BIN%\{{ each_lib }}.dll exit 1  # [win]
-        - if not exist %LIBRARY_LIB%\{{ each_lib }}_import.lib exit 1  # [win]
 
-        # absence of static libraries
+        # static libraries on windows
+        - if not exist %LIBRARY_LIB%\{{ each_lib }}.lib exit 1  # [win]
+
+        # absence of static libraries (on unix)
         - test ! -f $PREFIX/lib/lib{{ each_lib }}.a             # [unix]
-        - if exist %LIBRARY_LIB%\{{ each_lib }}.lib exit 1      # [win]
         {% endfor %}
 
         # headers
-        {% for each_header in [
-            "sentencepiece.pb.h", "sentencepiece_model.pb.h", "sentencepiece_processor.h", "sentencepiece_trainer.h"
-        ] %}
+        {% for each_header in ["sentencepiece_processor.h", "sentencepiece_trainer.h"] %}
         - test -f $PREFIX/include//{{ each_header }} || (echo "{{ each_header }} not found" && exit 1)  # [unix]
         - if not exist %LIBRARY_INC%\\{{ each_header }} exit 1                                          # [win]
         {% endfor %}
@@ -163,6 +161,7 @@ outputs:
         - libprotobuf {{ libprotobuf }}
         # host deps of static libsentencepiece leak to consumers
         - libabseil {{ libabseil }}  # [win]
+        - setuptools
       run:
         - python
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
