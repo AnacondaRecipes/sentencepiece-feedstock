@@ -1,2 +1,3 @@
 # On CI, this value is sometimes not read from the CBC file for some reason. This is a workaround.
-libabseil: 20250814.1
+libabseil: 20260107.0
+libprotobuf: 6.33.5
