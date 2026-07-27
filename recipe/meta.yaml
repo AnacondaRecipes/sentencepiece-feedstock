@@ -24,7 +24,7 @@ source:
     - patches/0006-also-link-to-static-absl_flags_-on-windows.patch
 
 build:
-  number: 2
+  number: 3
 
 outputs:
   - name: sentencepiece
@@ -64,8 +64,8 @@ outputs:
         - cmake
         - ninja
       host:
-        - libabseil {{ libabseil }}
-        - libprotobuf {{ libprotobuf }}
+        - libabseil 20260526.0
+        - libprotobuf 7.35.1
       run:
         # sentencepiece uses PUBLIC linkage for abseil, which is correct
         # (unfortunately) because it contains abseil types in its API
@@ -125,8 +125,8 @@ outputs:
         - ninja
       host:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
-        - libabseil {{ libabseil }}
-        - libprotobuf {{ libprotobuf }}
+        - libabseil 20260526.0
+        - libprotobuf 7.35.1
       run:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
     test:
@@ -154,9 +154,9 @@ outputs:
         - pip
         - python
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
-        - libprotobuf {{ libprotobuf }}
+        - libprotobuf 7.35.1
         # host deps of static libsentencepiece leak to consumers
-        - libabseil {{ libabseil }}  # [win]
+        - libabseil 20260526.0  # [win]
         - setuptools
       run:
         - python
