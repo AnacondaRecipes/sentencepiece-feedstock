@@ -153,8 +153,6 @@ outputs:
         - {{ compiler('cxx') }}
         - {{ stdlib('c') }}
         - pkg-config  # [unix]
-        - cmake
-        - ninja
       host:
         - pip
         - python

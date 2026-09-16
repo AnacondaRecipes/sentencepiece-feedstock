@@ -1,7 +1,17 @@
 #!/bin/bash
 set -ex
 
-export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+pushd ..
+cmake -S . -B build \
+  -DCMAKE_INSTALL_PREFIX="$(pwd)/build/root" \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DSPM_ENABLE_SHARED=OFF \
+  -DSPM_ABSL_PROVIDER=package \
+  -DSPM_PROTOBUF_PROVIDER=package \
+  -GNinja
+cmake --build build --target install
+popd
+
 cd $SRC_DIR/python
 $PYTHON -m pip install --no-deps --no-build-isolation -vv .
 
