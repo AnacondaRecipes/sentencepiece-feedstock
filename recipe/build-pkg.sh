@@ -1,7 +1,6 @@
 #!/bin/bash
 set -ex
 
-pushd ..
 cmake -S . -B build \
   -DCMAKE_INSTALL_PREFIX="$(pwd)/build/root" \
   -DCMAKE_BUILD_TYPE=Release \
@@ -10,7 +9,6 @@ cmake -S . -B build \
   -DSPM_PROTOBUF_PROVIDER=package \
   -GNinja
 cmake --build build --target install
-popd
 
 cd $SRC_DIR/python
 $PYTHON -m pip install --no-deps --no-build-isolation -vv .
