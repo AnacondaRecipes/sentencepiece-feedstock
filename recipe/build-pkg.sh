@@ -1,6 +1,7 @@
 #!/bin/bash
 set -ex
 
+export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}"
 cd $SRC_DIR/python
 $PYTHON -m pip install --no-deps --no-build-isolation -vv .
 
