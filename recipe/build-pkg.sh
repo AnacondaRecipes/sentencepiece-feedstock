@@ -1,14 +1,13 @@
 #!/bin/bash
 set -ex
 
-cmake -S . -B build \
-  -DCMAKE_INSTALL_PREFIX="$(pwd)/build/root" \
+cmake -S "$SRC_DIR" -B "$SRC_DIR/build" \
+  -DCMAKE_INSTALL_PREFIX="$SRC_DIR/build/root" \
   -DCMAKE_BUILD_TYPE=Release \
   -DSPM_ENABLE_SHARED=OFF \
   -DSPM_ABSL_PROVIDER=package \
-  -DSPM_PROTOBUF_PROVIDER=package \
   -GNinja
-cmake --build build --target install
+cmake --build "$SRC_DIR/build" --target install
 
 cd $SRC_DIR/python
 $PYTHON -m pip install --no-deps --no-build-isolation -vv .
