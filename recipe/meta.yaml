@@ -1,11 +1,12 @@
-{% set version = "0.2.1" %}
+{% set name = "sentencepiece" %}
+{% set version = "0.2.2" %}
 
 package:
-  name: sentencepiece-split
+  name: {{ name }}-split
   version: {{ version }}
 
 source:
-  url: https://github.com/google/sentencepiece/archive/refs/tags/v{{ version }}.tar.gz
+  url: https://github.com/google/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
   sha256: c1a59e9259c9653ad0ade653dadff074cd31f0a6ff2a11316f67bee4189a8f1b
   patches:
     # trying to build both static & shared build seems to break on OSX
@@ -24,10 +25,11 @@ source:
     - patches/0006-also-link-to-static-absl_flags_-on-windows.patch
 
 build:
-  number: 3
+  number: 0
+  skip: true  # [py<39]
 
 outputs:
-  - name: sentencepiece
+  - name: {{ name }}
     # metapackage that holds everything together
     build:
       run_exports:
@@ -49,7 +51,8 @@ outputs:
       commands:
         # tested in other outputs
         - exit 0
-  - name: libsentencepiece
+
+  - name: lib{{ name }}
     script: build-lib.sh  # [unix]
     script: build-lib.bat  # [win]
     build:
@@ -64,8 +67,8 @@ outputs:
         - cmake
         - ninja
       host:
-        - libabseil 20260526.0
-        - libprotobuf 7.35.1
+        - libabseil {{ libabseil }}
+        - libprotobuf {{ libprotobuf }}
       run:
         # sentencepiece uses PUBLIC linkage for abseil, which is correct
         # (unfortunately) because it contains abseil types in its API
@@ -114,7 +117,7 @@ outputs:
         - ./test_sentencepiece.sh   # [unix]
         - ./test_sentencepiece.bat  # [win]
 
-  - name: sentencepiece-spm
+  - name: {{ name }}-spm
     script: build-lib.sh  # [unix]
     script: build-lib.bat  # [win]
     requirements:
@@ -125,8 +128,8 @@ outputs:
         - ninja
       host:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
-        - libabseil 20260526.0
-        - libprotobuf 7.35.1
+        - libabseil {{ libabseil }}
+        - libprotobuf {{ libprotobuf }}
       run:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
     test:
@@ -142,7 +145,7 @@ outputs:
         - spm_{{ each_bin }} --help & if ERRORLEVEL ==1 (exit 0) else (exit 1)      # [win]
         {% endfor %}
 
-  - name: sentencepiece-python
+  - name: {{ name }}-python
     script: build-pkg.sh  # [unix]
     script: build-pkg.bat  # [win]
     requirements:
@@ -154,10 +157,13 @@ outputs:
         - pip
         - python
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
-        - libprotobuf 7.35.1
+        - libprotobuf {{ libprotobuf }}
         # host deps of static libsentencepiece leak to consumers
-        - libabseil 20260526.0  # [win]
-        - setuptools
+        - libabseil {{ libabseil }}  # [win]
+        # upstream source - https://github.com/google/sentencepiece/blob/v0.2.2/python/pyproject.toml
+        - setuptools >=61.0
+        - wheel
+        - pybind11 >=2.12
       run:
         - python
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
