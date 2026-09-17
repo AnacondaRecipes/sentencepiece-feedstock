@@ -13,8 +13,8 @@ source:
     # - patches/0001-do-not-mix-static-shared-builds.patch
     # Fix symlink creation failure on Windows
     # - patches/0001-fix-failing-symlink-creation.patch  # [win]
-    # set PROTOBUF_USE_DLLS
-    # - patches/0002-ensure-we-set-PROTOBUF_USE_DLLS-when-using-our-own-p.patch
+    set PROTOBUF_USE_DLLS
+    - patches/0002-ensure-we-set-PROTOBUF_USE_DLLS-when-using-our-own-p.patch
     # ensure python bindings link to correct libs on windows
     # - patches/0003-point-to-our-libs-headers-for-windows-in-setup.py.patch
     # install pkg-config metadata also on windows
