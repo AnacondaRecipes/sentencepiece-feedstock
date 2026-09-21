@@ -20,7 +20,7 @@ source:
     # install pkg-config metadata also on windows
     # - patches/0004-also-install-pkg-config-files-on-windows.patch
     # install CMake metadata
-    # - patches/0005-create-and-install-CMake-metadata.patch
+    - patches/0005-create-and-install-CMake-metadata.patch
     # fix abseil setup on windows
     # - patches/0006-also-link-to-static-absl_flags_-on-windows.patch
 
@@ -148,6 +148,23 @@ outputs:
   - name: {{ name }}-python
     script: build-pkg.sh  # [unix]
     script: build-pkg.bat  # [win]
+    build:
+      ignore_run_exports_from:
+        # host deps of libsentencepiece (built with SPM_ENABLE_SHARED=OFF)
+        # are statically linked in, so conda-build can't see them as
+        # "used" via the normal run-exports check
+        - {{ pin_subpackage('libsentencepiece', exact=True) }}
+      ignore_run_exports:
+        # libabseil, libsentencepiece, and libprotobuf are all statically
+        # linked into _sentencepiece.so (SPM_ENABLE_SHARED=OFF), so none
+        # of them appear as NEEDED entries in the compiled extension.
+        # Without ignoring them here, conda-build's run-exports check
+        # fails with "library in host/run but not used". Runtime ABI
+        # compatibility for these is instead guaranteed explicitly via
+        # pin_compatible(exact=True) in `run`, below.
+        - libabseil
+        - libsentencepiece
+        - libprotobuf
     requirements:
       build:
         - {{ compiler('cxx') }}
@@ -161,7 +178,7 @@ outputs:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
         - libprotobuf {{ libprotobuf }}
         # host deps of static libsentencepiece leak to consumers
-        - libabseil {{ libabseil }}  # [win]
+        - libabseil {{ libabseil }}
         # upstream source - https://github.com/google/sentencepiece/blob/v0.2.2/python/pyproject.toml
         - setuptools >=61.0
         - wheel
@@ -169,19 +186,29 @@ outputs:
       run:
         - python
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
+        - libabseil {{ libabseil }}
+        # pin to the exact libabseil and libprotobuf  build resolved in host, not just its
+        # version — abseil's ABI (symbol layout) can differ between builds
+        # of the same version, and a loose pin here caused an
+        # "undefined symbol" ImportError at runtime
+        - {{ pin_compatible('libabseil', exact=True) }}
+        - {{ pin_compatible('libprotobuf', exact=True) }}
     test:
       imports:
         - sentencepiece
       requires:
         - pip
         - pytest
+        - libabseil
+        - protobuf
       source_files:
         - python/test
+        - python/tools
         - data
       commands:
         - pip check
         # upstream test suite expects to be run from PKG_ROOT/python
-        - cd python && pytest test
+        - cd python && $PYTHON -m pytest -vv test
 
 about:
   home: https://github.com/google/sentencepiece
