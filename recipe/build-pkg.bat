@@ -3,7 +3,7 @@
 if exist "%SRC_DIR%\build" rmdir "%SRC_DIR%\build" /s /q
 
 cmake -S "%SRC_DIR%" -B "%SRC_DIR%\build" ^
-  -G "Ninja" ^
+  -A x64 ^
   -DCMAKE_INSTALL_PREFIX="%SRC_DIR%\build\root" ^
   -DCMAKE_BUILD_TYPE=Release ^
   -DSPM_ENABLE_SHARED=OFF ^
