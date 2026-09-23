@@ -1,18 +1,21 @@
-From f4dcafd724d3c9874f588c754b79c18558ef9eee Mon Sep 17 00:00:00 2001
+From fa1e651723cd1d7f4f619f19a056de1d23e5fc1f Mon Sep 17 00:00:00 2001
 From: Andrey Vetroumov <avetroumov@anaconda.com>
-Date: Tue, 22 Sep 2026 14:52:09 +0000
+Date: Wed, 23 Sep 2026 06:24:13 +0000
 Subject: [PATCH] also link to static absl_flags_ on windows
 
 ---
- python/setup.py | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ python/setup.py | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/python/setup.py b/python/setup.py
-index 867a924..c47e57f 100755
+index 867a924..bab7e66 100755
 --- a/python/setup.py
 +++ b/python/setup.py
-@@ -182,6 +182,14 @@ class build_ext_win(_build_ext):
+@@ -180,8 +180,17 @@ class build_ext_win(_build_ext):
+           '/std:c++17',
+           #'/I' + os.path.normpath('..\\build\\root\\include'),
            '/MD',
++          '/DPROTOBUF_USE_DLLS',
            '/I' + os.environ["LIBRARY_INC"]
        ] + get_protobuf_includes()
 +      # most of abseil can be built as shared, which ends up in one giant library
