@@ -214,7 +214,8 @@ outputs:
       commands:
         - pip check
         # upstream test suite expects to be run from PKG_ROOT/python
-        - cd python && $PYTHON -m pytest -vv test
+        - cd python && $PYTHON -m pytest -vv test  # [unix]
+        - cd python && %PYTHON% -m pytest -vv test  # [win]
 
 about:
   home: https://github.com/google/sentencepiece
