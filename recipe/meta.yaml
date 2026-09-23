@@ -18,7 +18,7 @@ source:
     # ensure python bindings link to correct libs on windows
     - patches/0003-point-to-our-libs-headers-for-windows-in-setup.py.patch
     # install pkg-config metadata also on windows
-    # - patches/0004-also-install-pkg-config-files-on-windows.patch
+    - patches/0004-also-install-pkg-config-files-on-windows.patch
     # install CMake metadata
     - patches/0005-create-and-install-CMake-metadata.patch
     # fix abseil setup on windows

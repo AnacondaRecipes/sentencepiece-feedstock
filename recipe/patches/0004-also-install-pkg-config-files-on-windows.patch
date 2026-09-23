@@ -1,27 +1,28 @@
-From c574515c9188dbbb139027a9fd248990073e4d12 Mon Sep 17 00:00:00 2001
-From: Patryk Kups <pkups@anaconda.com>
-Date: Tue, 9 Dec 2025 17:24:33 +0100
-Subject: [PATCH 4/7] also install pkg-config files on windows
+From d75cae0c1946a8a41f28432e903f72c65c94ccf2 Mon Sep 17 00:00:00 2001
+From: Andrey Vetroumov <avetroumov@anaconda.com>
+Date: Wed, 23 Sep 2026 09:30:31 +0000
+Subject: [PATCH] also install pkg config files on windows
 
 ---
- CMakeLists.txt | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ CMakeLists.txt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 5795fb5..750950b 100644
+index b831501..8369e05 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -149,9 +149,7 @@ set(INSTALL_DATADIR ${datadir_for_config_file})
+@@ -168,9 +168,10 @@ set(INSTALL_DATADIR ${datadir_for_config_file})
  configure_file("${PROJECT_SOURCE_DIR}/config.h.in" "config.h")
  configure_file("${PROJECT_SOURCE_DIR}/sentencepiece.pc.in" "sentencepiece.pc" @ONLY)
  
 -if (NOT MSVC)
--  # suppress warning for C++11 features.
--  # add_definitions("-Wno-deprecated-declarations -Wno-deprecated-enum-enum-conversion")
++#if (NOT MSVC)
+   # suppress warning for C++11 features.
+   # add_definitions("-Wno-deprecated-declarations -Wno-deprecated-enum-enum-conversion")
 +if (TRUE)
    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/sentencepiece.pc" DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
  endif()
  
 -- 
-2.39.5 (Apple Git-154)
+2.43.0
 
