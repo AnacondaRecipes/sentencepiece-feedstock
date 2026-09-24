@@ -67,7 +67,7 @@ outputs:
         - cmake
         - ninja
         # prevent CI error error: could not find git for clone of abseil-cpp-populate
-        - git
+        # - git
       host:
         - libabseil {{ libabseil }}
         - libprotobuf {{ libprotobuf }}
