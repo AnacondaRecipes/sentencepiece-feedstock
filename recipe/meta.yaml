@@ -178,6 +178,9 @@ outputs:
         - pkg-config  # [unix]
         - cmake
         - ninja-base
+        # prevent CI error
+        # error: could not find git for clone of abseil-cpp-populate
+        - git
       host:
         - pip
         - python
