@@ -1,7 +1,7 @@
-From 96083ffdb7c77af50c758273ae95790c3642b339 Mon Sep 17 00:00:00 2001
-From: Andrey Vetroumov <avetroumov@anaconda.com>
-Date: Fri, 18 Sep 2026 14:30:11 +0000
-Subject: [PATCH] create and install CMake metadata
+From b41a7c9f4ee6efd11a1a265fcb833579098effd1 Mon Sep 17 00:00:00 2001
+From: "H. Vetinari" <h.vetinari@gmx.com>
+Date: Wed, 18 Jan 2023 19:44:15 +1100
+Subject: [PATCH 5/7] create and install CMake metadata
 
 ---
  CMakeLists.txt               | 11 +++++++++++

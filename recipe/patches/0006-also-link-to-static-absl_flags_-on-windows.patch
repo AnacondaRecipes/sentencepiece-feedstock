@@ -1,7 +1,7 @@
-From fa1e651723cd1d7f4f619f19a056de1d23e5fc1f Mon Sep 17 00:00:00 2001
-From: Andrey Vetroumov <avetroumov@anaconda.com>
-Date: Wed, 23 Sep 2026 06:24:13 +0000
-Subject: [PATCH] also link to static absl_flags_ on windows
+From 2db393437e101f3271db237b4700e253114efb61 Mon Sep 17 00:00:00 2001
+From: Patryk Kups <pkups@anaconda.com>
+Date: Tue, 9 Dec 2025 19:29:55 +0100
+Subject: [PATCH 6] also link to static absl_flags_* on windows
 
 ---
  python/setup.py | 9 +++++++++

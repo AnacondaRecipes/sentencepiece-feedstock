@@ -1,7 +1,7 @@
-From abc455dd9ecdee8950887e363a6f3040cdab09b9 Mon Sep 17 00:00:00 2001
-From: Andrey Vetroumov <avetroumov@anaconda.com>
-Date: Tue, 22 Sep 2026 14:33:17 +0000
-Subject: [PATCH] point to our libs headers for windows in setup.py
+From 64e2af67577224878f1dda1aba26d7b8cb1f77c0 Mon Sep 17 00:00:00 2001
+From: Patryk Kups <pkups@anaconda.com>
+Date: Tue, 9 Dec 2025 16:39:46 +0100
+Subject: [PATCH 3/7] point to our libs / headers for windows in setup.py
 
 ---
  python/setup.py | 23 +++++++++++++++++------

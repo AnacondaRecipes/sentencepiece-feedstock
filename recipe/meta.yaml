@@ -65,9 +65,7 @@ outputs:
         - {{ compiler('cxx') }}
         - {{ stdlib('c') }}
         - cmake
-        - ninja
-        # prevent CI error error: could not find git for clone of abseil-cpp-populate
-        # - git
+        - ninja-base
       host:
         - libabseil {{ libabseil }}
         - libprotobuf {{ libprotobuf }}
@@ -85,7 +83,7 @@ outputs:
         - {{ compiler('cxx') }}
         - {{ stdlib('c') }}
         - cmake
-        - ninja
+        - ninja-base
         - pkg-config
       source_files:
         - data/botchan.txt
@@ -127,9 +125,7 @@ outputs:
         - {{ compiler('cxx') }}
         - {{ stdlib('c') }}
         - cmake
-        - ninja
-        # prevent CI error error: could not find git for clone of abseil-cpp-populate
-        - git
+        - ninja-base
       host:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
         - libabseil {{ libabseil }}
@@ -175,9 +171,7 @@ outputs:
         - {{ stdlib('c') }}
         - pkg-config  # [unix]
         - cmake
-        - ninja
-        # prevent CI error error: could not find git for clone of abseil-cpp-populate
-        - git
+        - ninja-base
       host:
         - pip
         - python
@@ -192,7 +186,6 @@ outputs:
       run:
         - python
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
-        - libabseil {{ libabseil }}
         # pin to the exact libabseil and libprotobuf  build resolved in host, not just its
         # version — abseil's ABI (symbol layout) can differ between builds
         # of the same version, and a loose pin here caused an
@@ -205,7 +198,6 @@ outputs:
       requires:
         - pip
         - pytest
-        - libabseil
         - protobuf
       source_files:
         - python/test

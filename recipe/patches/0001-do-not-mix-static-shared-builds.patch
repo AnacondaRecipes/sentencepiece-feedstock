@@ -1,7 +1,7 @@
-From 0297caff1f5e8984c6306ba19fd8602836d2fc56 Mon Sep 17 00:00:00 2001
-From: Andrey Vetroumov <avetroumov@anaconda.com>
-Date: Fri, 18 Sep 2026 13:23:44 +0000
-Subject: [PATCH] do not mix static shared builds
+From 2fe3e37744c810590e631c01fb57133080fc5f46 Mon Sep 17 00:00:00 2001
+From: "H. Vetinari" <h.vetinari@gmx.com>
+Date: Thu, 2 Dec 2021 08:39:53 +1100
+Subject: [PATCH 1/7] do not mix static & shared builds
 
 ---
  src/CMakeLists.txt | 18 +++++++++---------
