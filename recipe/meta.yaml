@@ -66,6 +66,9 @@ outputs:
         - {{ stdlib('c') }}
         - cmake
         - ninja-base
+        # prevent CI error
+        # error: could not find git for clone of abseil-cpp-populate
+        - git
       host:
         - libabseil {{ libabseil }}
         - libprotobuf {{ libprotobuf }}
@@ -126,6 +129,9 @@ outputs:
         - {{ stdlib('c') }}
         - cmake
         - ninja-base
+        # prevent CI error
+        # error: could not find git for clone of abseil-cpp-populate
+        - git
       host:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
         - libabseil {{ libabseil }}
