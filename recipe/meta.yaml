@@ -23,6 +23,8 @@ source:
     - patches/0005-create-and-install-CMake-metadata.patch
     # fix abseil setup on windows
     - patches/0006-also-link-to-static-absl_flags_-on-windows.patch
+    # ensure python bindings link to correct libs on windows
+    - patches/0007-point-to-our-libs-headers-for-unix-in-setup.py.patch
 
 build:
   number: 0
@@ -66,9 +68,6 @@ outputs:
         - {{ stdlib('c') }}
         - cmake
         - ninja-base
-        # prevent CI error
-        # error: could not find git for clone of abseil-cpp-populate
-        - git
       host:
         - libabseil {{ libabseil }}
         - libprotobuf {{ libprotobuf }}
@@ -129,9 +128,6 @@ outputs:
         - {{ stdlib('c') }}
         - cmake
         - ninja-base
-        # prevent CI error
-        # error: could not find git for clone of abseil-cpp-populate
-        - git
       host:
         - {{ pin_subpackage('libsentencepiece', exact=True) }}
         - libabseil {{ libabseil }}
@@ -178,9 +174,6 @@ outputs:
         - pkg-config  # [unix]
         - cmake
         - ninja-base
-        # prevent CI error
-        # error: could not find git for clone of abseil-cpp-populate
-        - git
       host:
         - pip
         - python
