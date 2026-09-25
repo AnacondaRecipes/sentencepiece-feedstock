@@ -1,0 +1,64 @@
+From 8e2811f558361220a8aecd46bd8fe301bab29367 Mon Sep 17 00:00:00 2001
+From: Andrey Vetroumov <avetroumov@anaconda.com>
+Date: Fri, 25 Sep 2026 11:14:03 +0000
+Subject: [PATCH] point to our libs headers for unix in setup.py
+
+---
+ python/setup.py | 40 ++++++++++++++++++++++++++++++++--------
+ 1 file changed, 32 insertions(+), 8 deletions(-)
+
+diff --git a/python/setup.py b/python/setup.py
+index bab7e66..f3af2e5 100755
+--- a/python/setup.py
++++ b/python/setup.py
+@@ -104,15 +104,39 @@ class build_ext_unix(_build_ext):
+   """Override build_extension to run cmake."""
+ 
+   def build_extension(self, ext):
+-    cflags, libs = get_cflags_and_libs('../build/root')
+-    abseil_libs = find_abseil_lib('../build/third_party')
+-    cflags.extend(find_absl_include(is_msvc=False))
++    #cflags, libs = get_cflags_and_libs('../build/root')
++    #abseil_libs = find_abseil_lib('../build/third_party')
++    #cflags.extend(find_absl_include(is_msvc=False))
++
++    #if len(libs) == 0:
++      #subprocess.check_call(['./build_bundled.sh', __version__])
++      #cflags, libs = get_cflags_and_libs('./build/root')
++      #abseil_libs = find_abseil_lib('./build/third_party')
++     # cflags.extend(find_absl_include(is_msvc=False))
++    conda_prefix = os.environ.get('PREFIX')
++    abseil_libs = []
++    if conda_prefix and os.path.exists(
++        os.path.join(conda_prefix, 'lib', 'libsentencepiece.so')):
++      print("--------------------------------Found PREFIX ------------------------")
++      cflags = [
++        '-std=c++17',
++        '-I' + os.path.normpath(os.path.join(conda_prefix, 'include')),
++      ]
++      libs = [
++        '-L' + os.path.join(conda_prefix, 'lib'),
++        '-lsentencepiece',
++        '-lsentencepiece_train',
++        '-lprotobuf',
++      ]
++    else:
++      cflags, libs = get_cflags_and_libs('../build/root')
++      abseil_libs = find_abseil_lib('../build/third_party')
+ 
+-    if len(libs) == 0:
+-      subprocess.check_call(['./build_bundled.sh', __version__])
+-      cflags, libs = get_cflags_and_libs('./build/root')
+-      abseil_libs = find_abseil_lib('./build/third_party')
+-      cflags.extend(find_absl_include(is_msvc=False))
++      if len(libs) == 0:
++        subprocess.check_call(['./build_bundled.sh', __version__])
++        cflags, libs = get_cflags_and_libs('./build/root')
++        abseil_libs = find_abseil_lib('./build/third_party')
++    cflags.extend(find_absl_include(is_msvc=False))
+ 
+     # Fix compile on some versions of Mac OSX
+     # See: https://github.com/neulab/xnmt/issues/199
+-- 
+2.43.0
+

@@ -4,50 +4,53 @@ Date: Thu, 2 Dec 2021 08:39:53 +1100
 Subject: [PATCH 1/7] do not mix static & shared builds
 
 ---
- src/CMakeLists.txt | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ src/CMakeLists.txt | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 8d4a34f..fbdf238 100644
+index 4b0e1f3..e0b71f1 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -228,18 +228,18 @@ if (SPM_ENABLE_SHARED)
-     target_link_libraries(sentencepiece log)
-     target_link_libraries(sentencepiece_train log)
+@@ -227,18 +227,19 @@ if (SPM_ENABLE_SHARED)
+     target_link_libraries(sentencepiece PRIVATE log)
+     target_link_libraries(sentencepiece_train PRIVATE log)
    endif()
 -endif()
--
--add_library(sentencepiece-static STATIC ${SPM_SRCS})
--add_library(sentencepiece_train-static STATIC ${SPM_TRAIN_SRCS})
 +else()
 +  add_library(sentencepiece-static STATIC ${SPM_SRCS})
 +  add_library(sentencepiece_train-static STATIC ${SPM_TRAIN_SRCS})
  
--target_link_libraries(sentencepiece-static INTERFACE ${SPM_LIBS})
--target_link_libraries(sentencepiece_train-static INTERFACE sentencepiece-static ${SPM_LIBS})
+-add_library(sentencepiece-static STATIC ${SPM_SRCS})
+-add_library(sentencepiece_train-static STATIC ${SPM_TRAIN_SRCS})
 +  target_link_libraries(sentencepiece-static INTERFACE ${SPM_LIBS})
 +  target_link_libraries(sentencepiece_train-static INTERFACE sentencepiece-static ${SPM_LIBS})
 +endif()
  
+-target_link_libraries(sentencepiece-static INTERFACE ${SPM_LIBS})
+-target_link_libraries(sentencepiece_train-static INTERFACE sentencepiece-static ${SPM_LIBS})
+ 
  if (SPM_ENABLE_SHARED)
-   target_link_libraries(sentencepiece ${SPM_LIBS})
-   target_link_libraries(sentencepiece_train ${SPM_LIBS} sentencepiece)
+   target_link_libraries(sentencepiece PUBLIC ${SPM_LIBS})
+   target_link_libraries(sentencepiece_train PUBLIC ${SPM_LIBS} sentencepiece)
 -  set(SPM_INSTALLTARGETS sentencepiece sentencepiece_train sentencepiece-static sentencepiece_train-static)
 +  set(SPM_INSTALLTARGETS sentencepiece sentencepiece_train)
    set_target_properties(sentencepiece sentencepiece_train PROPERTIES SOVERSION 0 VERSION 0.0.0)
    set_target_properties(sentencepiece PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS YES)
    set_target_properties(sentencepiece_train PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS YES)
-@@ -254,10 +254,10 @@ else()
+@@ -253,11 +254,10 @@ else()
    add_library(sentencepiece ALIAS sentencepiece-static)
    add_library(sentencepiece_train ALIAS sentencepiece_train-static)
    set(SPM_INSTALLTARGETS sentencepiece-static sentencepiece_train-static)
--endif()
++  set_target_properties(sentencepiece-static PROPERTIES OUTPUT_NAME "sentencepiece")
++  set_target_properties(sentencepiece_train-static PROPERTIES OUTPUT_NAME "sentencepiece_train")
+ endif()
  
 -set_target_properties(sentencepiece-static PROPERTIES OUTPUT_NAME "sentencepiece")
 -set_target_properties(sentencepiece_train-static PROPERTIES OUTPUT_NAME "sentencepiece_train")
-+  set_target_properties(sentencepiece-static PROPERTIES OUTPUT_NAME "sentencepiece")
-+  set_target_properties(sentencepiece_train-static PROPERTIES OUTPUT_NAME "sentencepiece_train")
-+endif()
- 
- if (NOT MSVC)
-   if (SPM_COVERAGE)
+-
+ if (NOT WIN32)
+   set(CMAKE_CXX_FLAGS "-O3 -Wall -fPIC ${CMAKE_CXX_FLAGS}")
+   set_source_files_properties(
+-- 
+2.43.0
+
