@@ -1,17 +1,17 @@
-From 9fd10c3fa5b11a514314d6c3221ac86faba72c23 Mon Sep 17 00:00:00 2001
+From 8e2811f558361220a8aecd46bd8fe301bab29367 Mon Sep 17 00:00:00 2001
 From: Andrey Vetroumov <avetroumov@anaconda.com>
-Date: Fri, 25 Sep 2026 09:45:08 +0000
+Date: Fri, 25 Sep 2026 11:14:03 +0000
 Subject: [PATCH] point to our libs headers for unix in setup.py
 
 ---
- python/setup.py | 35 +++++++++++++++++++++++++++--------
- 1 file changed, 27 insertions(+), 8 deletions(-)
+ python/setup.py | 40 ++++++++++++++++++++++++++++++++--------
+ 1 file changed, 32 insertions(+), 8 deletions(-)
 
 diff --git a/python/setup.py b/python/setup.py
-index bab7e66..145767a 100755
+index bab7e66..f3af2e5 100755
 --- a/python/setup.py
 +++ b/python/setup.py
-@@ -104,15 +104,34 @@ class build_ext_unix(_build_ext):
+@@ -104,15 +104,39 @@ class build_ext_unix(_build_ext):
    """Override build_extension to run cmake."""
  
    def build_extension(self, ext):
@@ -28,15 +28,20 @@ index bab7e66..145767a 100755
 +      #abseil_libs = find_abseil_lib('./build/third_party')
 +     # cflags.extend(find_absl_include(is_msvc=False))
 +    conda_prefix = os.environ.get('PREFIX')
++    abseil_libs = []
 +    if conda_prefix and os.path.exists(
-+        os.path.join(conda_prefix, 'lib', 'libsentencepiece.a')):
-+      cflags, libs = get_cflags_and_libs(conda_prefix)
-+      abseil_libs = find_abseil_lib(os.path.join(conda_prefix, 'lib'))
-+      # get_cflags_and_libs()/find_abseil_lib() only handle sentencepiece
-+      # and abseil; with SPM_PROTOBUF_PROVIDER=package, protobuf is a
-+      # separate shared library that still needs linking explicitly.
-+      libs.append('-L' + os.path.join(conda_prefix, 'lib'))
-+      libs.append('-lprotobuf')
++        os.path.join(conda_prefix, 'lib', 'libsentencepiece.so')):
++      print("--------------------------------Found PREFIX ------------------------")
++      cflags = [
++        '-std=c++17',
++        '-I' + os.path.normpath(os.path.join(conda_prefix, 'include')),
++      ]
++      libs = [
++        '-L' + os.path.join(conda_prefix, 'lib'),
++        '-lsentencepiece',
++        '-lsentencepiece_train',
++        '-lprotobuf',
++      ]
 +    else:
 +      cflags, libs = get_cflags_and_libs('../build/root')
 +      abseil_libs = find_abseil_lib('../build/third_party')
