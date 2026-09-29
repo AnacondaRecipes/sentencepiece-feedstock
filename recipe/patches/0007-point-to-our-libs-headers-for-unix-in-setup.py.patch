@@ -1,17 +1,17 @@
-From e9deab6d87b068870033a8c5f2c2f9adec591850 Mon Sep 17 00:00:00 2001
+From 976f30d123fb65d3bb77bb1206dead963cbb9dcd Mon Sep 17 00:00:00 2001
 From: Andrey Vetroumov <avetroumov@anaconda.com>
-Date: Tue, 29 Sep 2026 07:50:36 +0000
+Date: Tue, 29 Sep 2026 09:04:09 +0000
 Subject: [PATCH] point to our libs headers for unix in setup.py
 
 ---
- python/setup.py | 32 ++++++++++++++++++++++++--------
- 1 file changed, 24 insertions(+), 8 deletions(-)
+ python/setup.py | 33 +++++++++++++++++++++++++--------
+ 1 file changed, 25 insertions(+), 8 deletions(-)
 
 diff --git a/python/setup.py b/python/setup.py
-index bab7e66..4065e47 100755
+index bab7e66..08aebce 100755
 --- a/python/setup.py
 +++ b/python/setup.py
-@@ -104,16 +104,32 @@ class build_ext_unix(_build_ext):
+@@ -104,16 +104,33 @@ class build_ext_unix(_build_ext):
    """Override build_extension to run cmake."""
  
    def build_extension(self, ext):
@@ -28,8 +28,9 @@ index bab7e66..4065e47 100755
 +     # cflags.extend(find_absl_include(is_msvc=False))
 +    conda_prefix = os.environ.get('PREFIX')
 +    abseil_libs = []
++    lib_ext = '.dylib' if sys.platform == 'darwin' else '.so'
 +    if conda_prefix and os.path.exists(
-+        os.path.join(conda_prefix, 'lib', 'libsentencepiece.so')):
++        os.path.join(conda_prefix, 'lib', 'libsentencepiece' + lib_ext)):
 +      print("--------------------------------Found PREFIX ------------------------")
 +      cflags = [
 +        '-std=c++17',
