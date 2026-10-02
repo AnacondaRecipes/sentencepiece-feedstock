@@ -151,11 +151,6 @@ outputs:
     script: build-pkg.sh  # [unix]
     script: build-pkg.bat  # [win]
     build:
-      ignore_run_exports_from:
-        # host deps of libsentencepiece (built with SPM_ENABLE_SHARED=OFF)
-        # are statically linked in, so conda-build can't see them as
-        # "used" via the normal run-exports check
-        - {{ pin_subpackage('libsentencepiece', exact=True) }}
       ignore_run_exports:
         # libabseil, libsentencepiece, and libprotobuf are all statically
         # linked into _sentencepiece.so (SPM_ENABLE_SHARED=OFF), so none
