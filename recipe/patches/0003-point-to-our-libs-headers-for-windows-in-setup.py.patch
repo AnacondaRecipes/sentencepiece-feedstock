@@ -4,55 +4,55 @@ Date: Tue, 9 Dec 2025 16:39:46 +0100
 Subject: [PATCH 3/7] point to our libs / headers for windows in setup.py
 
 ---
- python/setup.py | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+ python/setup.py | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
 diff --git a/python/setup.py b/python/setup.py
-index da68e71..b0f3f74 100755
+index 60e0811..867a924 100755
 --- a/python/setup.py
 +++ b/python/setup.py
-@@ -85,10 +85,11 @@ class build_ext(_build_ext):
-   """Override build_extension to run cmake."""
+@@ -163,7 +163,8 @@ class build_ext_win(_build_ext):
+     # Must pre-install sentencepice into build directory.
+     arch = get_win_arch()
  
-   def build_extension(self, ext):
--    cflags, libs = get_cflags_and_libs('../build/root')
-+    # cflags, libs = get_cflags_and_libs('../build/root')
-+    cflags = ['-std=c++17']
- 
--    if len(libs) == 0:
--      if is_sentencepiece_installed():
+-    if os.path.exists('..\\build_{}\\root\\lib'.format(arch)):
++    #if os.path.exists('..\\build_{}\\root\\lib'.format(arch)):
++    if False:
+       cflags = [
+           '/std:c++17',
+           '/I' + os.path.normpath('..\\build_{}\\root\\include'.format(arch)),
+@@ -173,16 +174,26 @@ class build_ext_win(_build_ext):
+           '..\\build_{}\\root\\lib\\sentencepiece_train.lib'.format(arch),
+       ]
+       libs.extend(find_abseil_lib('..\\build_{}\\third_party'.format(arch)))
+-    elif os.path.exists('..\\build\\root\\lib'):
++    #elif os.path.exists('..\\build\\root\\lib'):
 +    if True:
-+      if True:
-         cflags = cflags + run_pkg_config('cflags')
-         libs = run_pkg_config('libs')
-       else:
-@@ -164,17 +165,21 @@ def get_win_arch():
- if os.name == 'nt':
-   # Must pre-install sentencepice into build directory.
-   arch = get_win_arch()
--  if os.path.exists('..\\build\\root_{}\\lib'.format(arch)):
-+  if False:
-     cflags = ['/std:c++17', '/I..\\build\\root_{}\\include'.format(arch)]
-     libs = [
-         '..\\build\\root_{}\\lib\\sentencepiece.lib'.format(arch),
-         '..\\build\\root_{}\\lib\\sentencepiece_train.lib'.format(arch),
-     ]
--  elif os.path.exists('..\\build\\root\\lib'):
--    cflags = ['/std:c++17', '/I..\\build\\root\\include']
-+  elif True:
-+    cflags = ['/std:c++17', '/MD', '/I' + os.environ["LIBRARY_INC"]]
-     libs = [
--        '..\\build\\root\\lib\\sentencepiece.lib',
--        '..\\build\\root\\lib\\sentencepiece_train.lib',
-+      # equivalent of -L$PREFIX/lib -lsentencepiece -lsentencepiece_train -lprotobuf
-+      os.environ["LIBRARY_LIB"] + f"\\{x}.lib"
-+      # protobuf actually has the lib-prefix in the name also on windows;
-+      # since libsentencepiece is static on windows, we also need _its_
-+      # host dependencies for the link interface, i.e. also abseil
-+      for x in ["sentencepiece", "sentencepiece_train", "libprotobuf", "abseil_dll"]
-     ]
-   else:
-     # build library locally with cmake and vc++.
+       cflags = [
+           '/std:c++17',
+-          '/I' + os.path.normpath('..\\build\\root\\include'),
++          #'/I' + os.path.normpath('..\\build\\root\\include'),
++          '/MD',
++          '/I' + os.environ["LIBRARY_INC"]
+       ] + get_protobuf_includes()
+       libs = [
+-          '..\\build\\root\\lib\\sentencepiece.lib',
+-          '..\\build\\root\\lib\\sentencepiece_train.lib',
++          #'..\\build\\root\\lib\\sentencepiece.lib',
++          #'..\\build\\root\\lib\\sentencepiece_train.lib',
++          # equivalent of -L$PREFIX/lib -lsentencepiece -lsentencepiece_train -lprotobuf
++          os.environ["LIBRARY_LIB"] + f"\\{x}.lib"
++          # protobuf actually has the lib-prefix in the name also on windows;
++          # since libsentencepiece is static on windows, we also need _its_
++          # host dependencies for the link interface, i.e. also abseil
++          for x in ["sentencepiece", "sentencepiece_train", "libprotobuf", "abseil_dll"]
+       ]
+-      libs.extend(find_abseil_lib('..\\build\\third_party'))
++      #libs.extend(find_abseil_lib('..\\build\\third_party'))
++      libs.extend(find_abseil_lib(os.environ["LIBRARY_LIB"]))
+     else:
+       # build library locally with cmake and vc++.
+       if arch == 'amd64':
 -- 
-2.39.5 (Apple Git-154)
+2.43.0
 

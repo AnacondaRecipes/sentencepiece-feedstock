@@ -1,0 +1,58 @@
+From 976f30d123fb65d3bb77bb1206dead963cbb9dcd Mon Sep 17 00:00:00 2001
+From: Andrey Vetroumov <avetroumov@anaconda.com>
+Date: Tue, 29 Sep 2026 09:04:09 +0000
+Subject: [PATCH] point to our libs headers for unix in setup.py
+
+---
+ python/setup.py | 33 +++++++++++++++++++++++++--------
+ 1 file changed, 25 insertions(+), 8 deletions(-)
+
+diff --git a/python/setup.py b/python/setup.py
+index bab7e66..08aebce 100755
+--- a/python/setup.py
++++ b/python/setup.py
+@@ -104,16 +104,33 @@ class build_ext_unix(_build_ext):
+   """Override build_extension to run cmake."""
+ 
+   def build_extension(self, ext):
+-    cflags, libs = get_cflags_and_libs('../build/root')
+-    abseil_libs = find_abseil_lib('../build/third_party')
++    #cflags, libs = get_cflags_and_libs('../build/root')
++    #abseil_libs = find_abseil_lib('../build/third_party')
++    #cflags.extend(find_absl_include(is_msvc=False))
++
++    #if len(libs) == 0:
++      #subprocess.check_call(['./build_bundled.sh', __version__])
++      #cflags, libs = get_cflags_and_libs('./build/root')
++      #abseil_libs = find_abseil_lib('./build/third_party')
++     # cflags.extend(find_absl_include(is_msvc=False))
++    conda_prefix = os.environ.get('PREFIX')
++    abseil_libs = []
++    lib_ext = '.dylib' if sys.platform == 'darwin' else '.so'
++    if conda_prefix and os.path.exists(
++        os.path.join(conda_prefix, 'lib', 'libsentencepiece' + lib_ext)):
++      print("--------------------------------Found PREFIX ------------------------")
++      cflags = [
++        '-std=c++17',
++        '-I' + os.path.normpath(os.path.join(conda_prefix, 'include')),
++      ]
++      libs = [
++        '-L' + os.path.join(conda_prefix, 'lib'),
++        '-lsentencepiece',
++        '-lsentencepiece_train',
++        '-lprotobuf',
++      ]
+     cflags.extend(find_absl_include(is_msvc=False))
+ 
+-    if len(libs) == 0:
+-      subprocess.check_call(['./build_bundled.sh', __version__])
+-      cflags, libs = get_cflags_and_libs('./build/root')
+-      abseil_libs = find_abseil_lib('./build/third_party')
+-      cflags.extend(find_absl_include(is_msvc=False))
+-
+     # Fix compile on some versions of Mac OSX
+     # See: https://github.com/neulab/xnmt/issues/199
+     if sys.platform == 'darwin':
+-- 
+2.43.0
+
